@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GameFramework.h"
+#include "SceneManager.h"
 
 CGameFramework::CGameFramework()
 {
@@ -26,7 +27,7 @@ CGameFramework::CGameFramework()
 	m_pd3dFence = NULL;
 	for (int i = 0; i < m_nSwapChainBuffers; i++) m_nFenceValues[i] = 0;
 
-	m_pScene = NULL;
+	// m_pScene = NULL;
 
 	m_nWndClientWidth = FRAME_BUFFER_WIDTH;
 	m_nWndClientHeight = FRAME_BUFFER_HEIGHT;
@@ -319,8 +320,10 @@ void CGameFramework::BuildObjects()
 	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 	
 	//씬 객체를 생성하고 씬에 포함될 게임 객체들을 생성한다. 
-	m_pScene = new CScene();
-	m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList, m_hWnd);
+	/*m_pScene = new CScene();
+	m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList, m_hWnd);*/
+
+	SceneManager::GetInstance().ChangeScene(m_pd3dDevice, m_pd3dCommandList, m_hWnd, SceneType::START);
 
 	//CAirplanePlayer* pAirplanePlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
 	//m_pPlayer = pAirplanePlayer;
@@ -335,15 +338,16 @@ void CGameFramework::BuildObjects()
 	WaitForGpuComplete();
 
 	//그래픽 리소스들을 생성하는 과정에 생성된 업로드 버퍼들을 소멸시킨다.
-	if (m_pScene) m_pScene->ReleaseUploadBuffers();
+	// if (m_pScene) m_pScene->ReleaseUploadBuffers();
+	SceneManager::GetInstance().ReleaseUploadBuffers();
 
 	m_GameTimer.Reset();
 }
 
 void CGameFramework::ReleaseObjects()
 {
-	if (m_pScene) m_pScene->ReleaseObjects();
-	if (m_pScene) delete m_pScene;
+	/*if (m_pScene) m_pScene->ReleaseObjects();
+	if (m_pScene) delete m_pScene;*/
 }
 
 void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam,
@@ -412,12 +416,14 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	case WM_RBUTTONUP:
 	case WM_MOUSEMOVE:
 		OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
-		if (m_pScene)m_pScene->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
+		// if (m_pScene)m_pScene->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
+		SceneManager::GetInstance().OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 	case WM_KEYDOWN:
 	case WM_KEYUP:
 		OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
-		if (m_pScene)m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+		// if (m_pScene)m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+		SceneManager::GetInstance().OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 	}
 	return(0);
@@ -459,7 +465,8 @@ void CGameFramework::ChangeSwapChainState()
 
 void CGameFramework::AnimateObjects()
 {
-	if (m_pScene) m_pScene->AnimateObjects(m_GameTimer.GetTimeElapsed());
+	// if (m_pScene) m_pScene->AnimateObjects(m_GameTimer.GetTimeElapsed());
+	SceneManager::GetInstance().Update(m_GameTimer.GetTimeElapsed());
 }
 
 void CGameFramework::WaitForGpuComplete()
@@ -499,7 +506,7 @@ void CGameFramework::FrameAdvance()
 	//타이머의 시간이 갱신되도록 하고 프레임 레이트를 계산한다. 
 	m_GameTimer.Tick(0.0f);
 
-	if (m_pScene) m_pScene->AnimateObjects(m_GameTimer.GetTimeElapsed());
+	// if (m_pScene) m_pScene->AnimateObjects(m_GameTimer.GetTimeElapsed());
 
 	AnimateObjects();
 
@@ -541,7 +548,8 @@ void CGameFramework::FrameAdvance()
 
 	
 	//렌더링 코드
-	if (m_pScene) m_pScene->Render(m_pd3dCommandList);
+	// if (m_pScene) m_pScene->Render(m_pd3dCommandList);
+	SceneManager::GetInstance().Render(m_pd3dCommandList);
 
 //	//3인칭 카메라일 때 플레이어가 항상 보이도록 렌더링한다. 
 //#ifdef _WITH_PLAYER_TOP

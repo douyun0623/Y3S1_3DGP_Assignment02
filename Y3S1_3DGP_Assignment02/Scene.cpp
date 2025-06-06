@@ -191,6 +191,7 @@ bool CScene::ProcessInput(float fTimeElapsed)
 
 	return false;
 }
+
 void CScene::AnimateObjects(float fTimeElapsed)
 {
 	ProcessInput(fTimeElapsed);
