@@ -71,16 +71,10 @@ private:
 
 	CScene* m_pScene;
 
-	CGameObject* m_pSelectedObject = NULL;
-
 public:
 	CCamera* m_pCamera = NULL;
 
 public:
-	//플레이어 객체에 대한 포인터이다.
-	// CPlayer* m_pPlayer = NULL;
-	//마지막으로 마우스 버튼을 클릭할 때의 마우스 커서의 위치이다. 
-	POINT m_ptOldCursorPos;
 
 public:
 	CGameFramework();
@@ -105,7 +99,6 @@ public:
 	void ReleaseObjects();
 	
 	//프레임워크의 핵심(사용자 입력, 애니메이션, 렌더링)을 구성하는 함수이다. 
-	void ProcessInput();
 	void AnimateObjects();
 	void FrameAdvance();
 	
@@ -126,9 +119,5 @@ public:
 
 public:
 	void MoveToNextFrame();
-
-public:
-	void ProcessSelectedObject(DWORD dwDirection, float cxDelta, float cyDelta);
-
 };
 

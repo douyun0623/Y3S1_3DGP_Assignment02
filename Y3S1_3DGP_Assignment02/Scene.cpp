@@ -98,6 +98,9 @@ bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam,
 	{
 	case WM_LBUTTONDOWN:
 	case WM_RBUTTONDOWN:
+		//마우스가 눌려지면 마우스 픽킹을 하여 선택한 게임 객체를 찾는다.
+		m_pSelectedObject = PickObjectPointedByCursor(LOWORD(lParam), HIWORD(lParam), m_pCamera);
+
 		//마우스 캡쳐를 하고 현재 마우스 위치를 가져온다. 
 		::SetCapture(hWnd);
 		::GetCursorPos(&m_ptOldCursorPos);
@@ -123,7 +126,7 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	return(false);
 }
 
-bool CScene::ProcessInput()
+bool CScene::ProcessInput(float fTimeElapsed)
 {
 	static UCHAR pKeyBuffer[256];
 	DWORD dwDirection = 0;
@@ -165,11 +168,11 @@ bool CScene::ProcessInput()
 	if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
 	{
 		//픽킹으로 선택한 게임 객체가 있으면 키보드를 누르거나 마우스를 움직이면 게임 개체를 이동 또는 회전한다.
-		/*if (m_pSelectedObject)
+		if (m_pSelectedObject)
 		{
 			ProcessSelectedObject(dwDirection, cxDelta, cyDelta);
 		}
-		else*/
+		else
 		{
 			if (cxDelta || cyDelta)
 			{
@@ -182,7 +185,7 @@ bool CScene::ProcessInput()
 			}
 			/*플레이어를 dwDirection 방향으로 이동한다(실제로는 속도 벡터를 변경한다).
 			이동 거리는 시간에 비례하도록 한다. */
-			if (dwDirection) m_pPlayer->Move(dwDirection, 300.0f, true);	//  * m_GameTimer.GetTimeElapsed()
+			if (dwDirection) m_pPlayer->Move(dwDirection, 300.0f * fTimeElapsed, true);	//  * m_GameTimer.GetTimeElapsed()
 		}
 	}
 
@@ -190,7 +193,7 @@ bool CScene::ProcessInput()
 }
 void CScene::AnimateObjects(float fTimeElapsed)
 {
-	ProcessInput();
+	ProcessInput(fTimeElapsed);
 
 	for (int i = 0; i < m_nShaders; i++)
 	{
@@ -209,6 +212,24 @@ void CScene::ReleaseUploadBuffers()
 ID3D12RootSignature* CScene::GetGraphicsRootSignature()
 {
 	return(m_pd3dGraphicsRootSignature);
+}
+
+void CScene::ProcessSelectedObject(DWORD dwDirection, float cxDelta, float cyDelta)
+{
+	//픽킹으로 선택한 게임 객체가 있으면 키보드를 누르거나 마우스를 움직이면 게임 개체를 이동 또는 회전한다. 
+	if (dwDirection != 0)
+	{
+		if (dwDirection & DIR_FORWARD) m_pSelectedObject->MoveForward(+1.0f);
+		if (dwDirection & DIR_BACKWARD) m_pSelectedObject->MoveForward(-1.0f);
+		if (dwDirection & DIR_LEFT) m_pSelectedObject->MoveStrafe(+1.0f);
+		if (dwDirection & DIR_RIGHT) m_pSelectedObject->MoveStrafe(-1.0f);
+		if (dwDirection & DIR_UP) m_pSelectedObject->MoveUp(+1.0f);
+		if (dwDirection & DIR_DOWN) m_pSelectedObject->MoveUp(-1.0f);
+	}
+	if ((cxDelta != 0.0f) || (cyDelta != 0.0f))
+	{
+		m_pSelectedObject->Rotate(cyDelta, cxDelta, 0.0f);
+	}
 }
 
 void CScene::Render(ID3D12GraphicsCommandList* pd3dCommandList)

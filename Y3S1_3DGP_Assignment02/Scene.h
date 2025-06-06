@@ -22,7 +22,7 @@ public:
 	void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, HWND m_hWnd);
 	void ReleaseObjects();
 
-	bool ProcessInput();
+	bool ProcessInput(float fTimeElapsed);
 
 	void AnimateObjects(float fTimeElapsed);
 
@@ -33,6 +33,9 @@ public:
 	//그래픽 루트 시그너쳐를 생성한다. 
 	ID3D12RootSignature* CreateGraphicsRootSignature(ID3D12Device *pd3dDevice);
 	ID3D12RootSignature* GetGraphicsRootSignature();
+
+	// 
+	void ProcessSelectedObject(DWORD dwDirection, float cxDelta, float cyDelta);
 
 public:
 	CPlayer* m_pPlayer = NULL;
@@ -45,6 +48,8 @@ public:
 	POINT m_ptOldCursorPos;
 
 	HWND m_hWnd = NULL;
+
+	CGameObject* m_pSelectedObject = NULL;
 
 protected:
 	//배치(Batch) 처리를 하기 위하여 씬을 셰이더들의 리스트로 표현한다. 
