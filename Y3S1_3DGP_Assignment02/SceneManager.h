@@ -15,12 +15,19 @@ class SceneManager
 private:
     std::unique_ptr<CScene> currentScene;                    // 현재 씬
 
+    //Direct3D 디바이스 인터페이스에 대한 포인터이다. 주로 리소스를 생성하기 위하여 필요하다. 
+    ID3D12Device* m_pd3dDevice;
+
+    ID3D12GraphicsCommandList* m_pd3dCommandList;
+
+	HWND m_hWnd;  // 윈도우 핸들
 public:
     SceneManager() = default;
 
     static SceneManager& GetInstance(); // 싱글톤 접근
 
-    void ChangeScene(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, HWND m_hWnd, SceneType type);   // 씬 전환
+    void init(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, HWND hWnd);
+    void ChangeScene(SceneType type);   // 씬 전환
     void Update(float dt);              // 씬 업데이트 (로직)
     void Render(ID3D12GraphicsCommandList* pd3dCommandList);    // 씬 렌더링 (그리기)
 

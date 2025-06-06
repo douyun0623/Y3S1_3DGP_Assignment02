@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "Camera.h"
+#include "SceneManager.h"
 
 CScene::CScene()
 {
@@ -100,9 +101,10 @@ bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam,
 	case WM_RBUTTONDOWN:
 		//마우스가 눌려지면 마우스 픽킹을 하여 선택한 게임 객체를 찾는다.
 		m_pSelectedObject = PickObjectPointedByCursor(LOWORD(lParam), HIWORD(lParam), m_pCamera);
+		if (m_pSelectedObject) SceneManager::GetInstance().ChangeScene(SceneType::START); // 선택된 객체가 있으면 씬 변경
 
 		//마우스 캡쳐를 하고 현재 마우스 위치를 가져온다. 
-		::SetCapture(hWnd);
+		::SetCapture(m_hWnd);
 		::GetCursorPos(&m_ptOldCursorPos);
 		break;
 	case WM_LBUTTONUP:

@@ -7,7 +7,16 @@ SceneManager& SceneManager::GetInstance()
 	return instance;
 }
 
-void SceneManager::ChangeScene(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, HWND m_hWnd, SceneType type)
+void SceneManager::init(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, HWND hWnd)
+{
+	m_pd3dDevice = pd3dDevice; // Direct3D 디바이스 초기화
+	m_pd3dCommandList = pd3dCommandList; // 명령 리스트 초기화
+	this->m_hWnd = m_hWnd; // 윈도우 핸들 초기화
+	// 시작 씬으로 초기화
+	ChangeScene(SceneType::START);
+}
+
+void SceneManager::ChangeScene(SceneType type)
 {
 	if (SceneType::END == type) {
 		PostQuitMessage(0); // 종료 메시지 전송
@@ -19,7 +28,7 @@ void SceneManager::ChangeScene(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 		currentScene.reset(); // 현재 씬 포인터 초기화
 	}
 	currentScene = CreateScene(type);
-	if (currentScene) currentScene->BuildObjects(pd3dDevice, pd3dCommandList, m_hWnd);
+	if (currentScene) currentScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList, m_hWnd);
 }
 
 void SceneManager::Update(float dt)
