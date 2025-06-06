@@ -69,6 +69,11 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	m_pShaders[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	m_pShaders[0].BuildObjects(pd3dDevice, pd3dCommandList);
 
+	// 플레이어 설정
+	CAirplanePlayer* pAirplanePlayer = new CAirplanePlayer(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	m_pPlayer = pAirplanePlayer;
+	m_pPlayer->AddRef();
+	m_pCamera = m_pPlayer->GetCamera();
 }
 
 void CScene::ReleaseObjects()
@@ -80,6 +85,7 @@ void CScene::ReleaseObjects()
 		m_pShaders[i].ReleaseObjects();
 	}
 	if (m_pShaders) delete[] m_pShaders;
+	if (m_pPlayer) m_pPlayer->Release();
 }
 
 bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM
@@ -104,6 +110,9 @@ void CScene::AnimateObjects(float fTimeElapsed)
 	{
 		m_pShaders[i].AnimateObjects(fTimeElapsed);
 	}
+
+	//플레이어를 실제로 이동하고 카메라를 갱신한다. 중력과 마찰력의 영향을 속도 벡터에 적용한다.
+	m_pPlayer->Update(fTimeElapsed);
 }
 
 void CScene::ReleaseUploadBuffers()
@@ -116,19 +125,20 @@ ID3D12RootSignature* CScene::GetGraphicsRootSignature()
 	return(m_pd3dGraphicsRootSignature);
 }
 
-void CScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+void CScene::Render(ID3D12GraphicsCommandList* pd3dCommandList)
 {
-	pCamera->SetViewportsAndScissorRects(pd3dCommandList);
+	
+	m_pCamera->SetViewportsAndScissorRects(pd3dCommandList);
 
 	//그래픽 루트 시그너쳐를 파이프라인에 연결(설정)한다. 
 	pd3dCommandList->SetGraphicsRootSignature(m_pd3dGraphicsRootSignature);
 
-	if (pCamera) pCamera->UpdateShaderVariables(pd3dCommandList);
+	if (m_pCamera) m_pCamera->UpdateShaderVariables(pd3dCommandList);
 
 	//씬을 렌더링하는 것은 씬을 구성하는 게임 객체(셰이더를 포함하는 객체)들을 렌더링하는 것이다. 
 	for (int i = 0; i < m_nShaders; i++)
 	{
-		m_pShaders[i].Render(pd3dCommandList, pCamera);
+		m_pShaders[i].Render(pd3dCommandList, m_pCamera);
 	}
 }
 

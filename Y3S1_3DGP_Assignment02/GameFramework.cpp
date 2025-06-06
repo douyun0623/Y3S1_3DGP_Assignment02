@@ -322,9 +322,9 @@ void CGameFramework::BuildObjects()
 	m_pScene = new CScene();
 	m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
 
-	CAirplanePlayer* pAirplanePlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
-	m_pPlayer = pAirplanePlayer;
-	m_pCamera = m_pPlayer->GetCamera();
+	//CAirplanePlayer* pAirplanePlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
+	//m_pPlayer = pAirplanePlayer;
+	//m_pCamera = m_pPlayer->GetCamera();
 
 	//씬 객체를 생성하기 위하여 필요한 그래픽 명령 리스트들을 명령 큐에 추가한다.
 	m_pd3dCommandList->Close();
@@ -391,8 +391,8 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case VK_F1:
 		case VK_F2:
 		case VK_F3:
-			if (m_pPlayer) m_pCamera = m_pPlayer->ChangeCamera((wParam - VK_F1 + 1),
-				m_GameTimer.GetTimeElapsed());
+			/*if (m_pPlayer) m_pCamera = m_pPlayer->ChangeCamera((wParam - VK_F1 + 1),
+				m_GameTimer.GetTimeElapsed());*/
 			break; 
 		case VK_F8:
 			break;
@@ -467,7 +467,6 @@ void CGameFramework::ChangeSwapChainState()
 	m_nSwapChainBufferIndex = m_pdxgiSwapChain->GetCurrentBackBufferIndex();
 
 	CreateRenderTargetViews();
-
 }
 
 void CGameFramework::ProcessInput()
@@ -509,31 +508,31 @@ void CGameFramework::ProcessInput()
 	}
 
 	//마우스 또는 키 입력이 있으면 플레이어를 이동하거나(dwDirection) 회전한다(cxDelta 또는 cyDelta).
-	if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
-	{
-		//픽킹으로 선택한 게임 객체가 있으면 키보드를 누르거나 마우스를 움직이면 게임 개체를 이동 또는 회전한다.
-		if (m_pSelectedObject)
-		{
-			ProcessSelectedObject(dwDirection, cxDelta, cyDelta);
-		}
-		else
-		{
-			if (cxDelta || cyDelta)
-			{
-				/*cxDelta는 y-축의 회전을 나타내고 cyDelta는 x-축의 회전을 나타낸다.
-				  오른쪽 마우스 버튼이 눌려진 경우 cxDelta는 z-축의 회전을 나타낸다.*/
-				if (pKeyBuffer[VK_RBUTTON] & 0xF0)
-					m_pPlayer->Rotate(cyDelta, 0.0f, -cxDelta);
-				else
-					m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
-			}
-			/*플레이어를 dwDirection 방향으로 이동한다(실제로는 속도 벡터를 변경한다).
-			이동 거리는 시간에 비례하도록 한다. */
-			if (dwDirection) m_pPlayer->Move(dwDirection, 300.0f * m_GameTimer.GetTimeElapsed(), true);
-		}
-	}
+	//if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
+	//{
+	//	//픽킹으로 선택한 게임 객체가 있으면 키보드를 누르거나 마우스를 움직이면 게임 개체를 이동 또는 회전한다.
+	//	if (m_pSelectedObject)
+	//	{
+	//		ProcessSelectedObject(dwDirection, cxDelta, cyDelta);
+	//	}
+	//	else
+	//	{
+	//		if (cxDelta || cyDelta)
+	//		{
+	//			/*cxDelta는 y-축의 회전을 나타내고 cyDelta는 x-축의 회전을 나타낸다.
+	//			  오른쪽 마우스 버튼이 눌려진 경우 cxDelta는 z-축의 회전을 나타낸다.*/
+	//			if (pKeyBuffer[VK_RBUTTON] & 0xF0)
+	//				m_pPlayer->Rotate(cyDelta, 0.0f, -cxDelta);
+	//			else
+	//				m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
+	//		}
+	//		/*플레이어를 dwDirection 방향으로 이동한다(실제로는 속도 벡터를 변경한다).
+	//		이동 거리는 시간에 비례하도록 한다. */
+	//		if (dwDirection) m_pPlayer->Move(dwDirection, 300.0f * m_GameTimer.GetTimeElapsed(), true);
+	//	}
+	//}
 	//플레이어를 실제로 이동하고 카메라를 갱신한다. 중력과 마찰력의 영향을 속도 벡터에 적용한다.
-	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
+	// m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
 }
 
 void CGameFramework::AnimateObjects()
@@ -598,6 +597,8 @@ void CGameFramework::FrameAdvance()
 	
 	ProcessInput();
 
+	if (m_pScene) m_pScene->AnimateObjects(m_GameTimer.GetTimeElapsed());
+
 	AnimateObjects();
 
 	//명령 할당자와 명령 리스트를 리셋한다. 
@@ -638,16 +639,16 @@ void CGameFramework::FrameAdvance()
 
 	
 	//렌더링 코드
-	if (m_pScene) m_pScene->Render(m_pd3dCommandList, m_pCamera);
+	if (m_pScene) m_pScene->Render(m_pd3dCommandList);
 
-	//3인칭 카메라일 때 플레이어가 항상 보이도록 렌더링한다. 
-#ifdef _WITH_PLAYER_TOP
-	//렌더 타겟은 그대로 두고 깊이 버퍼를 1.0으로 지우고 플레이어를 렌더링하면 플레이어는 무조건 그려질 것이다. 
-	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, 
-		D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
-#endif
-	//3인칭 카메라일 때 플레이어를 렌더링한다. 
-	if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
+//	//3인칭 카메라일 때 플레이어가 항상 보이도록 렌더링한다. 
+//#ifdef _WITH_PLAYER_TOP
+//	//렌더 타겟은 그대로 두고 깊이 버퍼를 1.0으로 지우고 플레이어를 렌더링하면 플레이어는 무조건 그려질 것이다. 
+//	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, 
+//		D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
+//#endif
+//	//3인칭 카메라일 때 플레이어를 렌더링한다. 
+//	if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
 
 	
 	/*현재 렌더 타겟에 대한 렌더링이 끝나기를 기다린다. 

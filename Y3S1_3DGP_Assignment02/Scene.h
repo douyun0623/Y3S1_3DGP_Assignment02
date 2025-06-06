@@ -2,6 +2,7 @@
 #include "Timer.h"
 //#include "GameObject.h"
 #include "Shader.h"
+#include "Player.h"
 
 class CCamera;
 
@@ -25,7 +26,7 @@ public:
 
 	void AnimateObjects(float fTimeElapsed);
 
-	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
+	void Render(ID3D12GraphicsCommandList* pd3dCommandList);
 
 	void ReleaseUploadBuffers();
 
@@ -34,6 +35,9 @@ public:
 	ID3D12RootSignature* GetGraphicsRootSignature();
 
 public:
+	CPlayer* m_pPlayer = NULL;
+	CCamera* m_pCamera = NULL;
+
 	//씬의 모든 게임 객체들에 대한 마우스 픽킹을 수행한다. 
 	CGameObject* PickObjectPointedByCursor(int xClient, int yClient, CCamera *pCamera);
 
