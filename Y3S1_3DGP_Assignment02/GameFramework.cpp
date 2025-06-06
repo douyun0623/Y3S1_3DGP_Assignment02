@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GameFramework.h"
+#include "SceneManager.h"
 
 CGameFramework::CGameFramework()
 {
@@ -55,6 +56,8 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 
 	//렌더링할 게임 객체를 생성한다. 
 	BuildObjects();
+
+
 	
 	return(true);
 }
@@ -319,12 +322,17 @@ void CGameFramework::BuildObjects()
 	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 	
 	//씬 객체를 생성하고 씬에 포함될 게임 객체들을 생성한다. 
-	m_pScene = new CScene();
-	m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
+	/*m_pScene = new CScene();
+	m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);*/
+	
+	// 씬 생성 메니저의 생성의로 대체 
+	SceneManager::GetInstance().ChangeScene(SceneType::START, m_pd3dDevice, m_pd3dCommandList);
 
-	CAirplanePlayer* pAirplanePlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
+	/*CAirplanePlayer* pAirplanePlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
 	m_pPlayer = pAirplanePlayer;
-	m_pCamera = m_pPlayer->GetCamera();
+	m_pCamera = m_pPlayer->GetCamera();*/
+
+	// 카메라 생성과 관리는 씬에서 할것이다.
 
 	//씬 객체를 생성하기 위하여 필요한 그래픽 명령 리스트들을 명령 큐에 추가한다.
 	m_pd3dCommandList->Close();
@@ -337,13 +345,17 @@ void CGameFramework::BuildObjects()
 	//그래픽 리소스들을 생성하는 과정에 생성된 업로드 버퍼들을 소멸시킨다.
 	if (m_pScene) m_pScene->ReleaseUploadBuffers();
 
+	// 전체의 타임으로 생각하겠다.
 	m_GameTimer.Reset();
 }
 
 void CGameFramework::ReleaseObjects()
 {
-	if (m_pScene) m_pScene->ReleaseObjects();
-	if (m_pScene) delete m_pScene;
+	//if (m_pScene) m_pScene->ReleaseObjects();
+	//if (m_pScene) delete m_pScene;
+
+	// 씬 해제 -> 씬매니저에서 종료씬으로 넘기면서 끝내기
+	SceneManager::GetInstance().ChangeScene(SceneType::END, m_pd3dDevice, m_pd3dCommandList);
 }
 
 void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam,
@@ -538,7 +550,8 @@ void CGameFramework::ProcessInput()
 
 void CGameFramework::AnimateObjects()
 {
-	if (m_pScene) m_pScene->AnimateObjects(m_GameTimer.GetTimeElapsed());
+	/*if (m_pScene) m_pScene->AnimateObjects(m_GameTimer.GetTimeElapsed());*/
+	SceneManager::GetInstance().Update(m_GameTimer.GetTimeElapsed());
 }
 
 void CGameFramework::WaitForGpuComplete()
@@ -596,7 +609,8 @@ void CGameFramework::FrameAdvance()
 	//타이머의 시간이 갱신되도록 하고 프레임 레이트를 계산한다. 
 	m_GameTimer.Tick(0.0f);
 	
-	ProcessInput();
+	// 이거 씬 메니저에서 하도록 변경
+	//ProcessInput(); 
 
 	AnimateObjects();
 
@@ -638,16 +652,19 @@ void CGameFramework::FrameAdvance()
 
 	
 	//렌더링 코드
-	if (m_pScene) m_pScene->Render(m_pd3dCommandList, m_pCamera);
+	// if (m_pScene) m_pScene->Render(m_pd3dCommandList, m_pCamera);
 
 	//3인칭 카메라일 때 플레이어가 항상 보이도록 렌더링한다. 
-#ifdef _WITH_PLAYER_TOP
-	//렌더 타겟은 그대로 두고 깊이 버퍼를 1.0으로 지우고 플레이어를 렌더링하면 플레이어는 무조건 그려질 것이다. 
-	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, 
-		D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
-#endif
-	//3인칭 카메라일 때 플레이어를 렌더링한다. 
-	if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
+//#ifdef _WITH_PLAYER_TOP
+//	//렌더 타겟은 그대로 두고 깊이 버퍼를 1.0으로 지우고 플레이어를 렌더링하면 플레이어는 무조건 그려질 것이다. 
+//	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, 
+//		D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
+//#endif
+//	//3인칭 카메라일 때 플레이어를 렌더링한다. 
+//	if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
+
+
+	SceneManager::GetInstance().Render(m_pd3dCommandList);
 
 	
 	/*현재 렌더 타겟에 대한 렌더링이 끝나기를 기다린다. 
