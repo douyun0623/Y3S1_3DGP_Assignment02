@@ -64,6 +64,10 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 {
 	m_hWnd = hWnd;
 
+	//현재 마우스 커서의 위치를 가져온다. 
+	::GetCursorPos(&m_ptOldCursorPos);
+
+
 	//그래픽 루트 시그너쳐를 생성한다. 
 	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
 	
@@ -104,7 +108,7 @@ bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam,
 		if (m_pSelectedObject) SceneManager::GetInstance().ChangeScene(SceneType::START); // 선택된 객체가 있으면 씬 변경
 
 		//마우스 캡쳐를 하고 현재 마우스 위치를 가져온다. 
-		::SetCapture(m_hWnd);
+		::SetCapture(hWnd);
 		::GetCursorPos(&m_ptOldCursorPos);
 		break;
 	case WM_LBUTTONUP:
@@ -116,6 +120,7 @@ bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam,
 
 		break;
 	default:
+
 		break;
 	}
 

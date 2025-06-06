@@ -21,8 +21,10 @@ private:
     ID3D12GraphicsCommandList* m_pd3dCommandList;
 
 	HWND m_hWnd;  // 윈도우 핸들
+
+ 
 public:
-    SceneManager() = default;
+    // SceneManager() = default;
 
     static SceneManager& GetInstance(); // 싱글톤 접근
 
