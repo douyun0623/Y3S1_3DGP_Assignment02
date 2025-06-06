@@ -74,6 +74,7 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	m_pPlayer = pAirplanePlayer;
 	m_pPlayer->AddRef();
 	m_pCamera = m_pPlayer->GetCamera();
+	m_pCamera->SetPosition(XMFLOAT3(0.0f, 0.0f, -100.0f));
 }
 
 void CScene::ReleaseObjects()
