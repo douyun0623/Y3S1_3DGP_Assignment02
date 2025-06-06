@@ -2,7 +2,16 @@
 #include "Timer.h"
 #include "Scene.h"
 #include "Player.h"
+#include "map"	
+#include "memory.h"
 
+enum class SceneType
+{
+	START,
+	MENU,
+	LEVEL1, 
+	LEVEL2
+};
 
 //------------------------------------------------------------------------------------
 //-----------------------------------CGameFramework-----------------------------------
