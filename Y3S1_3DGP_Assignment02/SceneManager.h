@@ -14,13 +14,17 @@ class SceneManager
 {
 private:
     std::unique_ptr<CScene> currentScene;                    // ÇöÀç ¾À
+    HWND m_hWnd;
+    ID3D12Device* m_pd3dDevice;
+    ID3D12GraphicsCommandList* m_pd3dCommandList;
 
 public:
     SceneManager() = default;
 
     static SceneManager& GetInstance(); // ½Ì±ÛÅæ Á¢±Ù
 
-    void ChangeScene(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, HWND m_hWnd, SceneType type);   // ¾À ÀüÈ¯
+    void init(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, HWND m_hWnd);
+    void ChangeScene(SceneType type);   // ¾À ÀüÈ¯  ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, HWND m_hWnd, 
     void Update(float dt);              // ¾À ¾÷µ¥ÀÌÆ® (·ÎÁ÷)
     void Render(ID3D12GraphicsCommandList* pd3dCommandList);    // ¾À ·»´õ¸µ (±×¸®±â)
 

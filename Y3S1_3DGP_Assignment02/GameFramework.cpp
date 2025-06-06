@@ -323,7 +323,8 @@ void CGameFramework::BuildObjects()
 	/*m_pScene = new CScene();
 	m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList, m_hWnd);*/
 
-	SceneManager::GetInstance().ChangeScene(m_pd3dDevice, m_pd3dCommandList, m_hWnd, SceneType::START);
+	//SceneManager::GetInstance().ChangeScene(m_pd3dDevice, m_pd3dCommandList, m_hWnd, SceneType::START);
+	SceneManager::GetInstance().init(m_pd3dDevice, m_pd3dCommandList, m_hWnd);
 
 	//CAirplanePlayer* pAirplanePlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
 	//m_pPlayer = pAirplanePlayer;
