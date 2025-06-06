@@ -19,7 +19,7 @@ public:
 		lParam);
 
 	
-	void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+	void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, HWND m_hWnd);
 	void ReleaseObjects();
 
 	bool ProcessInput();
@@ -40,6 +40,11 @@ public:
 
 	//씬의 모든 게임 객체들에 대한 마우스 픽킹을 수행한다. 
 	CGameObject* PickObjectPointedByCursor(int xClient, int yClient, CCamera *pCamera);
+
+	//마지막으로 마우스 버튼을 클릭할 때의 마우스 커서의 위치이다. 
+	POINT m_ptOldCursorPos;
+
+	HWND m_hWnd = NULL;
 
 protected:
 	//배치(Batch) 처리를 하기 위하여 씬을 셰이더들의 리스트로 표현한다. 
