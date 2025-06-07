@@ -73,8 +73,8 @@ void Level1Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 
 	targets = {
 		XMFLOAT3(0.f, 0.f, 0.f),
-		XMFLOAT3(100.f, 0.f, 100.f),
-		XMFLOAT3(100.f, 0.f, 200.f),
+		XMFLOAT3(0.f, 100.f, 100.f),
+		XMFLOAT3(0.f, 0.f, 200.f),
 		XMFLOAT3(0.f, 0.f, 300.f),
 		XMFLOAT3(0.f, 0.f, 400.f),
 		XMFLOAT3(0.f, 0.f, 500.f),
@@ -210,7 +210,7 @@ void Level1Scene::moveToRail(float fTimeElapsed)
 	float pitchDelta = pitch - m_pPlayer->GetPitch(); // 선택사항
 
 	// 새 위치 계산
-	m_pPlayer->Rotate(pitchDelta, yawDelta, 0.0f);
+	m_pPlayer->Rotate(-pitchDelta, yawDelta, 0.0f); // -pitchDelta
 	m_pPlayer->Move(movement, false);
 }
 void Level1Scene::Render(ID3D12GraphicsCommandList* pd3dCommandList)
