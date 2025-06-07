@@ -70,8 +70,8 @@ private:
 	_TCHAR m_pszFrameRate[50];
 
 	// CScene* m_pScene;
-	std::map<SceneType, Scene> m_Scenes;
-	SceneType currentScene = SceneType::START;
+	// std::map<SceneType, Scene> m_Scenes;
+	// SceneType currentScene = SceneType::START;
 
 public:
 	CCamera* m_pCamera = NULL;
