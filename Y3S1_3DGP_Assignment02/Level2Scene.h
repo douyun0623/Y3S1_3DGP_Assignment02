@@ -26,4 +26,7 @@ public:
 	//그래픽 루트 시그너쳐를 생성한다. 
 	ID3D12RootSignature* CreateGraphicsRootSignature(ID3D12Device* pd3dDevice) override;
 	ID3D12RootSignature* GetGraphicsRootSignature()override;
+
+	CShader* FloorShader = nullptr;
+	int m_nFShaders = 1;
 };

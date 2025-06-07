@@ -71,10 +71,11 @@ void Level2Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 	//그래픽 루트 시그너쳐를 생성한다. 
 	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
 
-	m_nShaders = 1;
-	m_pShaders = new CObjectsShader[m_nShaders];
-	m_pShaders[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
-	m_pShaders[0].BuildObjects(pd3dDevice, pd3dCommandList);
+	FloorShader = new CFloorShader[m_nFShaders];
+	FloorShader[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	FloorShader[0].BuildObjects(pd3dDevice, pd3dCommandList);
+
+
 
 	// 플레이어 설정
 	CPlayer* pAirplanePlayer = new CLevel2Player(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
@@ -91,6 +92,8 @@ void Level2Scene::ReleaseObjects()
 		m_pShaders[i].ReleaseShaderVariables();
 		m_pShaders[i].ReleaseObjects();
 	}
+	FloorShader[0].ReleaseShaderVariables();
+	FloorShader[0].ReleaseObjects();
 	if (m_pShaders) delete[] m_pShaders;
 	if (m_pPlayer) m_pPlayer->Release();
 }
@@ -108,8 +111,8 @@ bool Level2Scene::ProcessInput(float fTimeElapsed)
 		if (pKeyBuffer['S'] & 0xF0) dwDirection |= DIR_BACKWARD;
 		if (pKeyBuffer['A'] & 0xF0) dwDirection |= DIR_LEFT;
 		if (pKeyBuffer['D'] & 0xF0) dwDirection |= DIR_RIGHT;
-		if (pKeyBuffer['Q'] & 0xF0) dwDirection |= DIR_UP;
-		if (pKeyBuffer['E'] & 0xF0) dwDirection |= DIR_DOWN;
+		//if (pKeyBuffer['Q'] & 0xF0) dwDirection |= DIR_UP;
+		//if (pKeyBuffer['E'] & 0xF0) dwDirection |= DIR_DOWN;
 	}
 	float cxDelta = 0.0f, cyDelta = 0.0f;
 	POINT ptCursorPos;
@@ -212,6 +215,7 @@ void Level2Scene::AnimateObjects(float fTimeElapsed)
 void Level2Scene::ReleaseUploadBuffers()
 {
 	for (int i = 0; i < m_nShaders; i++) m_pShaders[i].ReleaseUploadBuffers();
+	if (FloorShader) FloorShader[0].ReleaseUploadBuffers();
 }
 
 ID3D12RootSignature* Level2Scene::GetGraphicsRootSignature()
@@ -234,6 +238,7 @@ void Level2Scene::Render(ID3D12GraphicsCommandList* pd3dCommandList)
 	{
 		m_pShaders[i].Render(pd3dCommandList, m_pCamera);
 	}
+	FloorShader[0].Render(pd3dCommandList, m_pCamera);
 
 	// 3인칭 카메라일 때 플레이어가 항상 보이도록 렌더링한다. 
 #ifdef _WITH_PLAYER_TOP
