@@ -557,9 +557,9 @@ CTankMesh::CTankMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCo
 	std::vector<CDiffusedVertex> outVertices;
 	std::vector<UINT> outIndices;
 
-	CreateTankMesh(XMFLOAT3(-1, 0, -3), XMFLOAT3(3, 2, 5), outVertices, outIndices);
-	CreateTankMesh(XMFLOAT3(-1, 2, -2), XMFLOAT3(3, 1, 2), outVertices, outIndices);
-	CreateTankMesh(XMFLOAT3(0, 2, 0), XMFLOAT3(1, 1, 3), outVertices, outIndices);
+	CreateTankMesh(XMFLOAT3(-2, 0, -3), XMFLOAT3(5, 2, 5), outVertices, outIndices);
+	CreateTankMesh(XMFLOAT3(-1, 2, -2), XMFLOAT3(3, 1, 3), outVertices, outIndices);
+	CreateTankMesh(XMFLOAT3(0, 2, 1), XMFLOAT3(1, 1, 3), outVertices, outIndices);
 
 	//직육면체는 꼭지점(정점)이 8개이다. 
 	m_nVertices = static_cast<UINT>(outVertices.size());
