@@ -1,11 +1,11 @@
 #include "stdafx.h"
-#include "Scene111.h"
+#include "StartScene.h"
 
-CScene::CScene()
+StartScene::StartScene()
 {
 }
 
-ID3D12RootSignature* CScene::CreateGraphicsRootSignature(ID3D12Device* pd3dDevice)
+ID3D12RootSignature* StartScene::CreateGraphicsRootSignature(ID3D12Device* pd3dDevice)
 {
 	ID3D12RootSignature* pd3dGraphicsRootSignature = NULL;
 
@@ -58,7 +58,7 @@ ID3D12RootSignature* CScene::CreateGraphicsRootSignature(ID3D12Device* pd3dDevic
 	return(pd3dGraphicsRootSignature);
 }
 
-void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, HWND hWnd)
+void StartScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, HWND hWnd)
 {
 	m_hWnd = hWnd;
 
@@ -78,7 +78,7 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	m_pCamera->SetPosition(XMFLOAT3(0.0f, 0.0f, -100.0f));
 }
 
-void CScene::ReleaseObjects()
+void StartScene::ReleaseObjects()
 {
 	if (m_pd3dGraphicsRootSignature) m_pd3dGraphicsRootSignature->Release();
 	for (int i = 0; i < m_nShaders; i++)
@@ -90,7 +90,7 @@ void CScene::ReleaseObjects()
 	if (m_pPlayer) m_pPlayer->Release();
 }
 
-bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM
+bool StartScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM
 	lParam)
 {
 	switch (nMessageID)
@@ -119,13 +119,13 @@ bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam,
 	return false;
 }
 
-bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam,
+bool StartScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam,
 	LPARAM lParam)
 {
 	return(false);
 }
 
-bool CScene::ProcessInput(float fTimeElapsed)
+bool StartScene::ProcessInput(float fTimeElapsed)
 {
 	static UCHAR pKeyBuffer[256];
 	DWORD dwDirection = 0;
@@ -190,7 +190,7 @@ bool CScene::ProcessInput(float fTimeElapsed)
 
 	return false;
 }
-void CScene::AnimateObjects(float fTimeElapsed)
+void StartScene::AnimateObjects(float fTimeElapsed)
 {
 	ProcessInput(fTimeElapsed);
 
@@ -203,16 +203,16 @@ void CScene::AnimateObjects(float fTimeElapsed)
 	m_pPlayer->Update(fTimeElapsed);
 }
 
-void CScene::ReleaseUploadBuffers()
+void StartScene::ReleaseUploadBuffers()
 {
 	for (int i = 0; i < m_nShaders; i++) m_pShaders[i].ReleaseUploadBuffers();
 }
 
-ID3D12RootSignature* CScene::GetGraphicsRootSignature()
+ID3D12RootSignature* StartScene::GetGraphicsRootSignature()
 {
 	return(m_pd3dGraphicsRootSignature);
 }
-void CScene::Render(ID3D12GraphicsCommandList* pd3dCommandList)
+void StartScene::Render(ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	
 	m_pCamera->SetViewportsAndScissorRects(pd3dCommandList);

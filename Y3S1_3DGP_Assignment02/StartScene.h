@@ -2,11 +2,11 @@
 
 #include "Scene.h"
 
-class CScene : public Scene
+class StartScene : public Scene
 {
 public:
-	CScene();
-	~CScene() {}
+	StartScene();
+	~StartScene() {}
 	
 	void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, HWND m_hWnd) override;
 	void ReleaseObjects() override;
