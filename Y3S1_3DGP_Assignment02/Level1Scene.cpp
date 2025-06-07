@@ -77,11 +77,11 @@ void Level1Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 	m_pShaders[0].BuildObjects(pd3dDevice, pd3dCommandList);
 
 	// 플레이어 설정
-	CAirplanePlayer* pAirplanePlayer = new CAirplanePlayer(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	CPlayer* pAirplanePlayer = new CLevel1Player(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	m_pPlayer = pAirplanePlayer;
 	m_pPlayer->AddRef();
 	m_pCamera = m_pPlayer->GetCamera();
-	m_pCamera->SetPosition(XMFLOAT3(0.0f, 5.0f, -10.f));
+	//m_pCamera->SetPosition(XMFLOAT3(0.0f, 5.0f, -10.f));
 }
 
 void Level1Scene::ReleaseObjects()
@@ -96,8 +96,7 @@ void Level1Scene::ReleaseObjects()
 	if (m_pPlayer) m_pPlayer->Release();
 }
 
-bool Level1Scene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM
-	lParam)
+bool Level1Scene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	switch (nMessageID)
 	{
@@ -126,8 +125,7 @@ bool Level1Scene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 	return false;
 }
 
-bool Level1Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam,
-	LPARAM lParam)
+bool Level1Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	return(false);
 }
@@ -169,4 +167,13 @@ void Level1Scene::Render(ID3D12GraphicsCommandList* pd3dCommandList)
 	{
 		m_pShaders[i].Render(pd3dCommandList, m_pCamera);
 	}
+
+	// 3인칭 카메라일 때 플레이어가 항상 보이도록 렌더링한다. 
+#ifdef _WITH_PLAYER_TOP
+	//렌더 타겟은 그대로 두고 깊이 버퍼를 1.0으로 지우고 플레이어를 렌더링하면 플레이어는 무조건 그려질 것이다. 
+	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, 
+		D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
+#endif
+	//3인칭 카메라일 때 플레이어를 렌더링한다. 
+	if (m_pPlayer) m_pPlayer->Render(pd3dCommandList, m_pCamera);
 }

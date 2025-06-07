@@ -123,3 +123,14 @@ public:
 	virtual CCamera* ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
 	virtual void OnPrepareRender();
 };
+
+
+class CLevel1Player : public CPlayer
+{
+public:
+	CLevel1Player(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList,
+		ID3D12RootSignature* pd3dGraphicsRootSignature);
+	virtual ~CLevel1Player();
+	virtual CCamera* ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
+	virtual void OnPrepareRender();
+};

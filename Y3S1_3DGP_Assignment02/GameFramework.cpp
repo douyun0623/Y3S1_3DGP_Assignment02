@@ -569,7 +569,7 @@ void CGameFramework::FrameAdvance()
 	if (currentScene)
 		currentScene->Render(m_pd3dCommandList);
 
-//	//3인칭 카메라일 때 플레이어가 항상 보이도록 렌더링한다. 
+	//3인칭 카메라일 때 플레이어가 항상 보이도록 렌더링한다. 
 //#ifdef _WITH_PLAYER_TOP
 //	//렌더 타겟은 그대로 두고 깊이 버퍼를 1.0으로 지우고 플레이어를 렌더링하면 플레이어는 무조건 그려질 것이다. 
 //	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, 
