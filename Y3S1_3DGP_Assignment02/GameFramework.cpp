@@ -323,15 +323,6 @@ void CGameFramework::BuildObjects()
 	// m_pScene = new CScene();
 	SceneManager::GetInstance().InitScenes(m_pd3dDevice, m_pd3dCommandList, m_hWnd);
 
-	/*auto currentScene = SceneManager::GetInstance().GetCurrentScene();
-	if (currentScene)
-		currentScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList, m_hWnd);*/
-	// m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList, m_hWnd);
-
-	//CAirplanePlayer* pAirplanePlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
-	//m_pPlayer = pAirplanePlayer;
-	//m_pCamera = m_pPlayer->GetCamera();
-
 	//씬 객체를 생성하기 위하여 필요한 그래픽 명령 리스트들을 명령 큐에 추가한다.
 	m_pd3dCommandList->Close();
 	ID3D12CommandList* ppd3dCommandLists[] = { m_pd3dCommandList };
@@ -351,8 +342,6 @@ void CGameFramework::BuildObjects()
 
 void CGameFramework::ReleaseObjects()
 {
-	//if (m_pScene) m_pScene->ReleaseObjects();
-	//if (m_pScene) delete m_pScene;
 	auto currentScene = SceneManager::GetInstance().GetCurrentScene();
 	if (currentScene)
 		currentScene->ReleaseObjects();
@@ -389,6 +378,15 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 			/*‘F1’ 키를 누르면 1인칭 카메라, ‘F2’ 키를 누르면 스페이스-쉽 카메라로 변경한다,
 			  ‘F3’ 키를 누르면 3인칭 카메라로 변경한다.*/
+		case '1':
+			SceneManager::GetInstance().ChangeScene(SceneType::START);
+			break;
+		case '2':
+			SceneManager::GetInstance().ChangeScene(SceneType::LEVEL1);
+			break;
+		case '3':
+			SceneManager::GetInstance().ChangeScene(SceneType::LEVEL2);
+			break;
 		case VK_F1:
 		case VK_F2:
 		case VK_F3:

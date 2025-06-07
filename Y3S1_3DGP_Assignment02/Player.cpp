@@ -211,7 +211,7 @@ void CPlayer::Update(float fTimeElapsed)
 	if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
 	
 	//카메라가 3인칭 카메라이면 카메라가 변경된 플레이어 위치를 바라보도록 한다. 
-	//if (nCameraMode == THIRD_PERSON_CAMERA) m_pCamera->SetLookAt(m_xmf3Position);
+	if (nCameraMode == THIRD_PERSON_CAMERA) m_pCamera->SetLookAt(m_xmf3Position);
 	
 	//카메라의 카메라 변환 행렬을 다시 생성한다.
 	m_pCamera->RegenerateViewMatrix();
@@ -307,7 +307,7 @@ void CPlayer::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamer
 {
 	DWORD nCameraMode = (pCamera) ? pCamera->GetMode() : 0x00;
 	//카메라 모드가 3인칭이면 플레이어 객체를 렌더링한다. 
-	if (nCameraMode == THIRD_PERSON_CAMERA)
+	if (nCameraMode == THIRD_PERSON_CAMERA || nCameraMode == SPACESHIP_CAMERA)	// SPACESHIP_CAMERA	THIRD_PERSON_CAMERA
 	{
 		if (m_pShader) m_pShader->Render(pd3dCommandList, pCamera);
 		CGameObject::Render(pd3dCommandList, pCamera);
@@ -555,7 +555,7 @@ CLevel2Player::CLevel2Player(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList
 	SetMesh(pCubeMesh);
 
 	//플레이어의 카메라를 스페이스-쉽 카메라로 변경(생성)한다.
-	m_pCamera = ChangeCamera(THIRD_PERSON_CAMERA, 0.0f);
+	m_pCamera = ChangeCamera(SPACESHIP_CAMERA, 0.0f);		// THIRD_PERSON_CAMERA
 
 	//플레이어를 위한 셰이더 변수를 생성한다. 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
@@ -605,7 +605,7 @@ CCamera* CLevel2Player::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 		m_pCamera = OnChangeCamera(SPACESHIP_CAMERA, nCurrentCameraMode);
 
 		m_pCamera->SetTimeLag(0.0f);
-		m_pCamera->SetOffset(XMFLOAT3(0.0f, 0.0f, 0.0f));
+		m_pCamera->SetOffset(XMFLOAT3(0.0f, 20.0f, -50.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 		m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 		m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);

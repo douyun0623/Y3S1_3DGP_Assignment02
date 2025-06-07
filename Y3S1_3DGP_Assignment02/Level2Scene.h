@@ -16,8 +16,10 @@ public:
 	void Render(ID3D12GraphicsCommandList* pd3dCommandList) override;
 
 	//씬에서 마우스와 키보드 메시지를 처리한다. 
+	bool ProcessInput(float fTimeElapsed);
 	bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM	lParam)override;
 	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)override;
+
 
 	void ReleaseUploadBuffers()override;
 
