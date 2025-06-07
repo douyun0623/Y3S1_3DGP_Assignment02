@@ -19,8 +19,9 @@ void SceneManager::InitScenes(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	for (auto& scenePair : m_Scenes) {
 		scenePair.second->BuildObjects(pd3dDevice, pd3dCommandList, m_hWnd);
 	}
-}
 
+	ChangeScene(SceneType::LEVEL2); // 초기 씬을 START로 설정
+}
 
 void SceneManager::ChangeScene(SceneType newType)
 {

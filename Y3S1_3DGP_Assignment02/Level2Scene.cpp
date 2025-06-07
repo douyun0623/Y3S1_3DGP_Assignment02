@@ -77,7 +77,7 @@ void Level2Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 	m_pShaders[0].BuildObjects(pd3dDevice, pd3dCommandList);
 
 	// 플레이어 설정
-	CPlayer* pAirplanePlayer = new CAirplanePlayer(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	CPlayer* pAirplanePlayer = new CLevel2Player(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	m_pPlayer = pAirplanePlayer;
 	m_pPlayer->AddRef();
 	m_pCamera = m_pPlayer->GetCamera();

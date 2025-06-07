@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 //정점을 표현하기 위한 클래스를 선언한다. 
 class CVertex
 {
@@ -37,6 +39,7 @@ public:
 class CMesh
 {
 public:
+	CMesh() = default; // 기본 생성자	
 	CMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
 	virtual ~CMesh();
 
@@ -129,4 +132,14 @@ public:
 	CSphereMeshDiffused(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList
 		* pd3dCommandList, float fRadius = 2.0f, int nSlices = 20, int nStacks = 20);
 	virtual ~CSphereMeshDiffused();
+};
+
+class CTankMesh : public CMesh
+{
+public:
+	CTankMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList * pd3dCommandList, 
+		float fWidth = 2.0f, float fHeight = 2.0f, float fDepth = 2.0f);
+	virtual ~CTankMesh();
+public:
+	void CreateTankMesh(const XMFLOAT3& origin, const XMFLOAT3& size, std::vector<CDiffusedVertex>& outVertices, std::vector<UINT>& outIndices);
 };

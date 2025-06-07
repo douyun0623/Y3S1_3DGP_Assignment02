@@ -545,3 +545,99 @@ CSphereMeshDiffused::~CSphereMeshDiffused()
 {
 
 }
+
+//-------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------
+//-----------------------------------CTankMesh-------------------------------------
+//-------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------
+
+CTankMesh::CTankMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, float fWidth, float fHeight, float fDepth)
+{
+	std::vector<CDiffusedVertex> outVertices;
+	std::vector<UINT> outIndices;
+
+	CreateTankMesh(XMFLOAT3(-1, 0, -3), XMFLOAT3(3, 2, 5), outVertices, outIndices);
+	CreateTankMesh(XMFLOAT3(-1, 2, -2), XMFLOAT3(3, 1, 2), outVertices, outIndices);
+	CreateTankMesh(XMFLOAT3(0, 2, 0), XMFLOAT3(1, 1, 3), outVertices, outIndices);
+
+	//직육면체는 꼭지점(정점)이 8개이다. 
+	m_nVertices = static_cast<UINT>(outVertices.size());
+	m_nStride = sizeof(CDiffusedVertex);
+	m_nOffset = 0;
+	m_nSlot = 0;
+	m_d3dPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
+	//fWidth: 직육면체 가로(x-축) 길이, fHeight: 직육면체 세로(y-축) 길이, fDepth: 직육면체 깊이(z-축) 길이
+	float fx = fWidth * 0.5f, fy = fHeight * 0.5f, fz = fDepth * 0.5f;
+
+	m_pd3dVertexBuffer = ::CreateBufferResource(pd3dDevice, pd3dCommandList, outVertices.data(),
+		m_nStride * m_nVertices, D3D12_HEAP_TYPE_DEFAULT,
+		D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &m_pd3dVertexUploadBuffer);
+
+	//정점 버퍼 뷰를 생성한다. 
+	m_d3dVertexBufferView.BufferLocation = m_pd3dVertexBuffer->GetGPUVirtualAddress();
+	m_d3dVertexBufferView.StrideInBytes = m_nStride;
+	m_d3dVertexBufferView.SizeInBytes = m_nStride * m_nVertices;
+
+	/*인덱스 버퍼는 직육면체의 6개의 면(사각형)에 대한 기하 정보를 갖는다.
+	  삼각형 리스트로 직육면체를 표현할 것이므로 각 면은 2개의 삼각형을 가지고 각 삼각형은 3개의 정점이 필요하다.
+	  즉, 인덱스 버퍼는 전체 36(=6*2*3)개의 인덱스를 가져야 한다.*/
+	// m_nIndices = 36;
+	m_nIndices = static_cast<UINT>(outIndices.size());
+
+	//인덱스 버퍼를 생성한다. 
+	m_pd3dIndexBuffer = ::CreateBufferResource(pd3dDevice, pd3dCommandList, outIndices.data(),
+		sizeof(UINT) * m_nIndices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_INDEX_BUFFER,
+		&m_pd3dIndexUploadBuffer);
+
+	//인덱스 버퍼 뷰를 생성한다.
+	m_d3dIndexBufferView.BufferLocation = m_pd3dIndexBuffer->GetGPUVirtualAddress();
+	m_d3dIndexBufferView.Format = DXGI_FORMAT_R32_UINT;
+	m_d3dIndexBufferView.SizeInBytes = sizeof(UINT) * m_nIndices;
+
+	//메쉬의 바운딩 박스(모델 좌표계)를 생성한다.
+	m_xmBoundingBox = BoundingOrientedBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(fx, fy, fz), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
+}
+
+CTankMesh::~CTankMesh()
+{
+}
+
+void CTankMesh::CreateTankMesh(const XMFLOAT3& origin, const XMFLOAT3& size, std::vector<CDiffusedVertex>& outVertices, std::vector<UINT>& outIndices)
+{
+	float ox = origin.x, oy = origin.y, oz = origin.z;
+	float sx = size.x, sy = size.y, sz = size.z;
+
+	// 8개의 꼭지점 (origin + size 이용)
+	XMFLOAT3 corners[8] = {
+		{ox        , oy + sy , oz        }, // 0
+		{ox + sx   , oy + sy , oz        }, // 1
+		{ox + sx   , oy + sy , oz + sz   }, // 2
+		{ox        , oy + sy , oz + sz   }, // 3
+		{ox        , oy      , oz        }, // 4
+		{ox + sx   , oy      , oz        }, // 5
+		{ox + sx   , oy      , oz + sz   }, // 6
+		{ox        , oy      , oz + sz   }  // 7
+	};
+
+	UINT startIndex = static_cast<UINT>(outVertices.size());
+
+
+	// 정점 추가 (색은 랜덤으로)
+	for (int i = 0; i < 8; ++i)
+		outVertices.emplace_back(corners[i], RANDOM_COLOR);
+
+	// 인덱스 12개의 삼각형, 6 면 × 2
+	UINT indices[] = {
+		3,1,0, 2,1,3,    // Front
+		0,5,4, 1,5,0,    // Top
+		3,4,7, 0,4,3,    // Back
+		1,6,5, 2,6,1,    // Bottom
+		2,7,6, 3,7,2,    // Left
+		6,4,5, 7,4,6     // Right
+	};
+
+	for (int i = 0; i < 36; ++i)
+		outIndices.push_back(startIndex + indices[i]);
+}
