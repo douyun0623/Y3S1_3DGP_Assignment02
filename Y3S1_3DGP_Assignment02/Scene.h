@@ -8,8 +8,8 @@
 class Scene
 {
 public:
-    Scene();
-    virtual ~Scene();
+	Scene() = default;
+	virtual ~Scene() = default;
 
     virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, HWND hWnd) = 0;
     virtual void ReleaseObjects() = 0;
@@ -23,8 +23,8 @@ public:
 
     virtual void ReleaseUploadBuffers() = 0;
 
-    virtual ID3D12RootSignature* GetGraphicsRootSignature();
-    virtual CGameObject* PickObjectPointedByCursor(int xClient, int yClient, CCamera* pCamera);
+	virtual ID3D12RootSignature* GetGraphicsRootSignature() { return(m_pd3dGraphicsRootSignature); }
+	virtual CGameObject* PickObjectPointedByCursor(int xClient, int yClient, CCamera* pCamera);
 
 protected:
     virtual ID3D12RootSignature* CreateGraphicsRootSignature(ID3D12Device* pd3dDevice) = 0;

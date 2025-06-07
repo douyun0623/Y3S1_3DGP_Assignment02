@@ -45,6 +45,14 @@ public:
 
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
 
+	// 구현 안해도 되는 가상 함수들이다.
+	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual void AnimateObjects(float fTimeElapsed);
+	virtual void ReleaseObjects();
+	virtual void ReleaseUploadBuffers();
+	//셰이더에 포함되어 있는 모든 게임 객체들에 대한 마우스 픽킹을 수행한다. 
+	virtual CGameObject* PickObjectByRayIntersection(XMFLOAT3& xmf3PickPosition,XMFLOAT4X4& xmf4x4View, float* pfNearHitDistance);
+
 protected:
 	//파이프라인 상태 객체들의 리스트(배열)이다. 
 	ID3D12PipelineState **m_ppd3dPipelineStates = NULL;
@@ -75,10 +83,9 @@ public:
 	CObjectsShader();
 	virtual ~CObjectsShader();
 
-	virtual void BuildObjects(ID3D12Device * pd3dDevice, ID3D12GraphicsCommandList
-		* pd3dCommandList);
-	virtual void AnimateObjects(float fTimeElapsed);
-	virtual void ReleaseObjects();
+	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList) override;
+	virtual void AnimateObjects(float fTimeElapsed)override;
+	virtual void ReleaseObjects()override;
 
 	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
 	virtual D3D12_SHADER_BYTECODE CreateVertexShader(ID3DBlob * *ppd3dShaderBlob);
@@ -94,7 +101,7 @@ public:
 public:
 	//셰이더에 포함되어 있는 모든 게임 객체들에 대한 마우스 픽킹을 수행한다. 
 	virtual CGameObject *PickObjectByRayIntersection(XMFLOAT3& xmf3PickPosition, 
-		XMFLOAT4X4& xmf4x4View, float* pfNearHitDistance);
+		XMFLOAT4X4& xmf4x4View, float* pfNearHitDistance)override;
 
 protected:
 	CGameObject** m_ppObjects = NULL;
