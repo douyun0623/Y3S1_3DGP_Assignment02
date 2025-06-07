@@ -106,7 +106,7 @@ XMFLOAT3 CGameObject::GetPosition()
 }
 
 //게임 객체의 로컬 z-축 벡터를 반환한다. 
-XMFLOAT3 CGameObject::GetLook()
+XMFLOAT3 CGameObject::GetLook() const
 {
 	return(Vector3::Normalize(XMFLOAT3(m_xmf4x4World._31, m_xmf4x4World._32,
 		m_xmf4x4World._33)));
@@ -210,8 +210,6 @@ int CGameObject::PickObjectByRayIntersection(XMFLOAT3& xmf3PickPosition, XMFLOAT
 	return(nIntersected);
 }
 
-
-
 //------------------------------------------------------------------------------------------------
 //----------------------------------------CRotatingObject-----------------------------------------
 //------------------------------------------------------------------------------------------------
@@ -231,3 +229,30 @@ void CRotatingObject::Animate(float fTimeElapsed)
 {
 	CGameObject::Rotate(&m_xmf3RotationAxis, m_fRotationSpeed * fTimeElapsed);
 }
+
+void CTankObject::Animate(float fTimeElapsed)
+{
+    m_fDirectionChangeTime += fTimeElapsed;
+
+    // 일정 시간마다 목표 회전각 설정 (-180 ~ +180도)
+    if (m_fDirectionChangeTime >= m_fDirectionChangeInterval)
+    {
+        int angleDeg = (rand() % 45) - 25;
+        m_fTargetYaw = angleDeg * 0.0174533f;
+        m_fDirectionChangeTime = 0.0f;
+    }
+
+    // 부드러운 회전을 위해 선형 보간 (lerp)
+    float fLerpSpeed = m_fRotationLerpSpeed * fTimeElapsed;
+    if (fLerpSpeed > 1.0f) fLerpSpeed = 1.0f;
+
+    // 보간된 회전 적용
+    m_fCurrentYaw = m_fCurrentYaw + (m_fTargetYaw - m_fCurrentYaw) * fLerpSpeed;
+    Rotate(0.0f, m_fCurrentYaw, 0.0f);  // 절대 회전 적용
+
+    // 이동
+    XMFLOAT3 dir = GetLook();
+    XMFLOAT3 moveDir = Vector3::ScalarProduct(dir, m_fMoveSpeed * fTimeElapsed);
+    SetPosition(Vector3::Add(GetPosition(), moveDir));
+}
+

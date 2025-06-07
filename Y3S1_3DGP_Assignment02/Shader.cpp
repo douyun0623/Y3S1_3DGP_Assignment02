@@ -682,7 +682,13 @@ void CFloorShader::AnimateObjects(float fTimeElapsed)
 void CEnemyShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	std::vector<XMFLOAT3> positions = {
-		XMFLOAT3(0.f, 0.f, 0.f)
+		XMFLOAT3(0.f, 0.f, 0.f),
+		XMFLOAT3(0.f, 0.f, 0.f),
+		XMFLOAT3(0.f, 0.f, 0.f),
+		XMFLOAT3(0.f, 0.f, 0.f),
+		XMFLOAT3(0.f, 0.f, 0.f),
+		XMFLOAT3(0.f, 0.f, 0.f),
+		XMFLOAT3(0.f, 0.f, 0.f),
 	};
 	const int numPositions = positions.size();
 
@@ -696,7 +702,7 @@ void CEnemyShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandL
 
 	for (int i = 0; i < m_nObjects; ++i)
 	{
-		CRotatingObject* pRotatingObject = new CRotatingObject();
+		CGameObject* pRotatingObject = new CTankObject();
 		pRotatingObject->SetMesh((CMesh*)pCubeMesh);
 		pRotatingObject->SetPosition(positions[i]);
 		m_ppObjects[i] = pRotatingObject;

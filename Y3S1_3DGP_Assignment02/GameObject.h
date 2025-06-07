@@ -45,7 +45,7 @@ public:
 
 	//게임 객체의 월드 변환 행렬에서 위치 벡터와 방향(x-축, y-축, z-축) 벡터를 반환한다.
 	XMFLOAT3 GetPosition();
-	XMFLOAT3 GetLook();
+	XMFLOAT3 GetLook() const;
 	XMFLOAT3 GetUp();
 	XMFLOAT3 GetRight();
 
@@ -91,4 +91,29 @@ public:
 			xmf3RotationAxis;
 	}
 	virtual void Animate(float fTimeElapsed);
+};
+
+class CTankObject : public CGameObject
+{
+public:
+	CTankObject() = default;
+	virtual ~CTankObject() = default;
+
+private:
+	XMFLOAT3 m_xmf3RotationAxis = { 0, 1, 0 }; // y축 회전
+	float m_fRotationSpeed = 0.0f;
+
+	float m_fMoveSpeed = 10.0f;
+	float m_fDirectionChangeTime = 0.0f; // 시간 누적
+	float m_fDirectionChangeInterval = 1.0f; // 2초마다 방향 변경
+
+	float m_fCurrentYaw = 0.0f;       // 현재 y축 회전 각도 (라디안)
+	float m_fTargetYaw = 0.0f;        // 목표 y축 회전 각도 (라디안)
+	float m_fRotationLerpSpeed = 2.0f; // 회전 속도 (값이 클수록 빨리 회전)
+
+public:
+	void SetRotationSpeed(float fRotationSpeed) { m_fRotationSpeed = fRotationSpeed; }
+	void SetRotationAxis(XMFLOAT3 xmf3RotationAxis) { m_xmf3RotationAxis = xmf3RotationAxis; }
+
+	virtual void Animate(float fTimeElapsed) override;
 };
