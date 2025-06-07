@@ -1,15 +1,8 @@
 #pragma once
 #include "Timer.h"
-#include "Scene111.h"
+#include "Scene.h"
 #include "Player.h"
 #include <map>
-
-enum class SceneType { 
-	START, 
-	MENU,
-	LEVEL1, 
-	LEVEL2 
-};
 
 //------------------------------------------------------------------------------------
 //-----------------------------------CGameFramework-----------------------------------
@@ -76,8 +69,8 @@ private:
 	//다음은 프레임 레이트를 주 윈도우의 캡션에 출력하기 위한 문자열이다. 
 	_TCHAR m_pszFrameRate[50];
 
-	CScene* m_pScene;
-	/*std::map<SceneType, void*> m_Scenes;*/
+	// CScene* m_pScene;
+	std::map<SceneType, Scene> m_Scenes;
 	SceneType currentScene = SceneType::START;
 
 public:
