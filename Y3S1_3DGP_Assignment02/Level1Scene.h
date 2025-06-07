@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+#include <vector>
 
 class Level1Scene : public Scene
 {
@@ -23,5 +24,11 @@ public:
 	//그래픽 루트 시그너쳐를 생성한다. 
 	ID3D12RootSignature* CreateGraphicsRootSignature(ID3D12Device* pd3dDevice) override;
 	ID3D12RootSignature* GetGraphicsRootSignature()override;
+
+	// 레일 따라가는 함수
+	void moveToRail(float fTimeElapsed);
+
+	int currentTargetIndex = 0;
+	std::vector<XMFLOAT3> targets;
 };
 

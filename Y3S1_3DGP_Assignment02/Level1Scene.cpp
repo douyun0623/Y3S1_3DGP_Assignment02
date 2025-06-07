@@ -71,6 +71,23 @@ void Level1Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 	//그래픽 루트 시그너쳐를 생성한다. 
 	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
 
+	targets = {
+		XMFLOAT3(0.f, 0.f, 0.f),
+		XMFLOAT3(100.f, 0.f, 100.f),
+		XMFLOAT3(100.f, 0.f, 200.f),
+		XMFLOAT3(0.f, 0.f, 300.f),
+		XMFLOAT3(0.f, 0.f, 400.f),
+		XMFLOAT3(0.f, 0.f, 500.f),
+		XMFLOAT3(0.f, 0.f, 600.f),
+		XMFLOAT3(0.f, 0.f, 700.f),
+		XMFLOAT3(0.f, 0.f, 800.f),
+		XMFLOAT3(0.f, 0.f, 900.f),
+		XMFLOAT3(0.f, 0.f, 1000.f),
+		XMFLOAT3(0.f, 0.f, 1100.f),
+		XMFLOAT3(0.f, 0.f, 1200.f),
+		XMFLOAT3(0.f, 0.f, 1300.f)
+	};
+
 	m_nShaders = 1;
 	m_pShaders = new CObjectsShader1[m_nShaders];
 	m_pShaders[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
@@ -139,7 +156,8 @@ void Level1Scene::AnimateObjects(float fTimeElapsed)
 	}
 
 	//플레이어를 실제로 이동하고 카메라를 갱신한다. 중력과 마찰력의 영향을 속도 벡터에 적용한다.
-	m_pPlayer->Move(DIR_FORWARD, 300.0f * fTimeElapsed, false);
+	// m_pPlayer->Move(DIR_FORWARD, 300.0f * fTimeElapsed, false);
+	moveToRail(fTimeElapsed);
 	m_pPlayer->Update(fTimeElapsed);
 }
 
@@ -151,6 +169,49 @@ void Level1Scene::ReleaseUploadBuffers()
 ID3D12RootSignature* Level1Scene::GetGraphicsRootSignature()
 {
 	return(m_pd3dGraphicsRootSignature);
+}
+
+void Level1Scene::moveToRail(float fTimeElapsed)
+{
+	if (targets.empty()) return;
+
+	XMFLOAT3 target = targets[currentTargetIndex];
+
+	// 방향 벡터 계산
+	XMFLOAT3 pos = m_pPlayer->GetPosition();
+	XMFLOAT3 tgt = target;
+	XMFLOAT3 dir = Vector3::Subtract(tgt, pos);
+	float distance = Vector3::Length(dir);
+
+
+	if (distance < 1.0f) {
+		// 타겟에 도달 → 다음 타겟으로 변경
+		currentTargetIndex++;
+		if (currentTargetIndex >= targets.size())
+			currentTargetIndex = 0; // 반복 순환 가능
+		return;
+	}
+
+	// 방향 정규화
+	XMFLOAT3 dirNormalized = Vector3::Normalize(dir);
+
+	float moveDist = 100.f * fTimeElapsed;
+	XMFLOAT3 movement = Vector3::ScalarProduct(dirNormalized, moveDist);  // 정규화 후 이동 벡터 계산
+
+
+	// Yaw 계산
+	float yaw = XMConvertToDegrees(atan2f(dirNormalized.x, dirNormalized.z));
+
+	// Pitch 계산 (원하면)
+	float horizontalLen = sqrtf(dirNormalized.x * dirNormalized.x + dirNormalized.z * dirNormalized.z);
+	float pitch = XMConvertToDegrees(atan2f(dirNormalized.y, horizontalLen));
+
+	float yawDelta = yaw - m_pPlayer->GetYaw();       // GetYaw()는 현재 방향 (직접 만들 수도 있음)
+	float pitchDelta = pitch - m_pPlayer->GetPitch(); // 선택사항
+
+	// 새 위치 계산
+	m_pPlayer->Rotate(pitchDelta, yawDelta, 0.0f);
+	m_pPlayer->Move(movement, false);
 }
 void Level1Scene::Render(ID3D12GraphicsCommandList* pd3dCommandList)
 {

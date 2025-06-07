@@ -159,6 +159,12 @@ namespace Vector3
 	{
 		return(TransformCoord(xmf3Vector, XMLoadFloat4x4(&xmmtx4x4Matrix)));
 	}
+	inline XMFLOAT3 Multiply(const XMFLOAT3& a, const XMFLOAT3& b)
+	{
+		XMFLOAT3 result;
+		XMStoreFloat3(&result, XMLoadFloat3(&a) * XMLoadFloat3(&b)); // 성분별 곱
+		return result;
+	}
 }
 
 //4차원 벡터의 연산
