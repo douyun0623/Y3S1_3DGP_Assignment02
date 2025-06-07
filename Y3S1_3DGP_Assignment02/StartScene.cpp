@@ -1,8 +1,14 @@
 #include "stdafx.h"
 #include "StartScene.h"
+#include "SceneManager.h"
 
 StartScene::StartScene()
 {
+}
+
+StartScene::~StartScene()
+{
+	ReleaseObjects();
 }
 
 ID3D12RootSignature* StartScene::CreateGraphicsRootSignature(ID3D12Device* pd3dDevice)
@@ -99,6 +105,7 @@ bool StartScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 	case WM_RBUTTONDOWN:
 		//마우스가 눌려지면 마우스 픽킹을 하여 선택한 게임 객체를 찾는다.
 		m_pSelectedObject = PickObjectPointedByCursor(LOWORD(lParam), HIWORD(lParam), m_pCamera);
+		if (m_pSelectedObject) SceneManager::GetInstance().ChangeScene(SceneType::LEVEL1);
 
 		//마우스 캡쳐를 하고 현재 마우스 위치를 가져온다. 
 		::SetCapture(hWnd);

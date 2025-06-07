@@ -321,11 +321,11 @@ void CGameFramework::BuildObjects()
 	
 	//씬 객체를 생성하고 씬에 포함될 게임 객체들을 생성한다. 
 	// m_pScene = new CScene();
-	SceneManager::GetInstance().InitScenes();
+	SceneManager::GetInstance().InitScenes(m_pd3dDevice, m_pd3dCommandList, m_hWnd);
 
-	auto currentScene = SceneManager::GetInstance().GetCurrentScene();
+	/*auto currentScene = SceneManager::GetInstance().GetCurrentScene();
 	if (currentScene)
-		currentScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList, m_hWnd);
+		currentScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList, m_hWnd);*/
 	// m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList, m_hWnd);
 
 	//CAirplanePlayer* pAirplanePlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
@@ -342,6 +342,7 @@ void CGameFramework::BuildObjects()
 
 	//그래픽 리소스들을 생성하는 과정에 생성된 업로드 버퍼들을 소멸시킨다.
 	// if (m_pScene) m_pScene->ReleaseUploadBuffers();
+	auto currentScene = SceneManager::GetInstance().GetCurrentScene();
 	if (currentScene)
 		currentScene->ReleaseUploadBuffers();
 
@@ -520,6 +521,7 @@ void CGameFramework::FrameAdvance()
 	m_GameTimer.Tick(0.0f);
 
 	// if (m_pScene) m_pScene->AnimateObjects(m_GameTimer.GetTimeElapsed());
+
 
 	AnimateObjects();
 

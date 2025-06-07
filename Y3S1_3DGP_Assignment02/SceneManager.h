@@ -18,7 +18,7 @@ private:
 public:
     static SceneManager& GetInstance();
 
-    void InitScenes(); // 씬 등록만 담당
+    void InitScenes(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, HWND m_hWnd); // 씬 등록만 담당
     void ChangeScene(SceneType newType);
     std::shared_ptr<Scene> GetCurrentScene() const;
 };

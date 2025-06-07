@@ -54,6 +54,15 @@
     <ClInclude Include="Camera.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="StartScene.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Level1Scene.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Y3S1_3DGP_Assignment02.cpp">
@@ -84,6 +93,15 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="StartScene.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Level1Scene.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
