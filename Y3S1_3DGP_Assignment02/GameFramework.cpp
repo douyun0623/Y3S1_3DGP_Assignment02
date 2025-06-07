@@ -520,9 +520,6 @@ void CGameFramework::FrameAdvance()
 	//타이머의 시간이 갱신되도록 하고 프레임 레이트를 계산한다. 
 	m_GameTimer.Tick(0.0f);
 
-	// if (m_pScene) m_pScene->AnimateObjects(m_GameTimer.GetTimeElapsed());
-
-
 	AnimateObjects();
 
 	//명령 할당자와 명령 리스트를 리셋한다. 
@@ -560,24 +557,12 @@ void CGameFramework::FrameAdvance()
 	//원하는 값으로 깊이-스텐실(뷰)을 지운다.
 	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle,
 		D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
-
 	
 	//렌더링 코드
-	// if (m_pScene) m_pScene->Render(m_pd3dCommandList);
 	auto currentScene = SceneManager::GetInstance().GetCurrentScene();
 
 	if (currentScene)
 		currentScene->Render(m_pd3dCommandList);
-
-	//3인칭 카메라일 때 플레이어가 항상 보이도록 렌더링한다. 
-//#ifdef _WITH_PLAYER_TOP
-//	//렌더 타겟은 그대로 두고 깊이 버퍼를 1.0으로 지우고 플레이어를 렌더링하면 플레이어는 무조건 그려질 것이다. 
-//	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, 
-//		D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
-//#endif
-//	//3인칭 카메라일 때 플레이어를 렌더링한다. 
-//	if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
-
 	
 	/*현재 렌더 타겟에 대한 렌더링이 끝나기를 기다린다. 
 	GPU가 렌더 타겟(버퍼)을 더 이상 사용하지 않으면 렌더 타겟의 상태는 
