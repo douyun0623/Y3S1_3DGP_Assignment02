@@ -607,7 +607,7 @@ void CObjectsShader1::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsComma
 {
 	std::vector<XMFLOAT3> positions = {
 		XMFLOAT3(0.f, 0.f, 0.f),
-		XMFLOAT3(0.f, 50.f, 100.f),
+		XMFLOAT3(30.f, 50.f, 100.f),
 		XMFLOAT3(0.f, 0.f, 200.f),
 		XMFLOAT3(0.f, 0.f, 300.f),
 		XMFLOAT3(0.f, 0.f, 400.f),

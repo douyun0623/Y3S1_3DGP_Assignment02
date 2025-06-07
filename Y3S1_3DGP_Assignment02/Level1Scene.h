@@ -30,5 +30,7 @@ public:
 
 	int currentTargetIndex = 0;
 	std::vector<XMFLOAT3> targets;
+
+	bool angleAdjusted = false;
 };
 

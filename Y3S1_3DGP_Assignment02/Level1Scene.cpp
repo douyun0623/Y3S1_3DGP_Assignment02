@@ -2,6 +2,11 @@
 #include "Level1Scene.h"
 #include "SceneManager.h"
 
+float Clamp(float value, float minVal, float maxVal)
+{
+	return (value < minVal) ? minVal : (value > maxVal) ? maxVal : value;
+}
+
 Level1Scene::Level1Scene()
 {
 }
@@ -73,7 +78,7 @@ void Level1Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 
 	targets = {
 		XMFLOAT3(0.f, 0.f, 0.f),
-		XMFLOAT3(0.f, 100.f, 100.f),
+		XMFLOAT3(30.f, 100.f, 100.f),
 		XMFLOAT3(0.f, 0.f, 200.f),
 		XMFLOAT3(0.f, 0.f, 300.f),
 		XMFLOAT3(0.f, 0.f, 400.f),
@@ -176,43 +181,44 @@ void Level1Scene::moveToRail(float fTimeElapsed)
 	if (targets.empty()) return;
 
 	XMFLOAT3 target = targets[currentTargetIndex];
-
-	// 방향 벡터 계산
 	XMFLOAT3 pos = m_pPlayer->GetPosition();
-	XMFLOAT3 tgt = target;
-	XMFLOAT3 dir = Vector3::Subtract(tgt, pos);
+	XMFLOAT3 dir = Vector3::Subtract(target, pos);
 	float distance = Vector3::Length(dir);
 
-
 	if (distance < 1.0f) {
-		// 타겟에 도달 → 다음 타겟으로 변경
 		currentTargetIndex++;
 		if (currentTargetIndex >= targets.size())
-			currentTargetIndex = 0; // 반복 순환 가능
+			currentTargetIndex = 0;
+
 		return;
 	}
 
 	// 방향 정규화
 	XMFLOAT3 dirNormalized = Vector3::Normalize(dir);
 
+	// 목표 Yaw 계산
+	float targetYaw = XMConvertToDegrees(atan2f(dirNormalized.x, dirNormalized.z));
+	float currentYaw = m_pPlayer->GetYaw();
+
+	// Yaw 보간 (회전 속도 제한)
+	float maxTurnSpeed = 90.0f * fTimeElapsed; // 초당 90도 회전 가능
+	float deltaYaw = targetYaw - currentYaw;
+
+	// [-180, 180] 범위로 조정
+	while (deltaYaw > 180.0f) deltaYaw -= 360.0f;
+	while (deltaYaw < -180.0f) deltaYaw += 360.0f;
+
+	// 실제로 회전할 값 계산 (보간)
+	float yawToApply = Clamp(deltaYaw, -maxTurnSpeed, maxTurnSpeed);
+	float newYaw = currentYaw + yawToApply;
+	m_pPlayer->Rotate(0, yawToApply, 0); // 또는 Rotate로 구현되어 있다면 Rotate(0, yawToApply, 0);
+
+	// 이동
 	float moveDist = 100.f * fTimeElapsed;
-	XMFLOAT3 movement = Vector3::ScalarProduct(dirNormalized, moveDist);  // 정규화 후 이동 벡터 계산
-
-
-	// Yaw 계산
-	float yaw = XMConvertToDegrees(atan2f(dirNormalized.x, dirNormalized.z));
-
-	// Pitch 계산 (원하면)
-	float horizontalLen = sqrtf(dirNormalized.x * dirNormalized.x + dirNormalized.z * dirNormalized.z);
-	float pitch = XMConvertToDegrees(atan2f(dirNormalized.y, horizontalLen));
-
-	float yawDelta = yaw - m_pPlayer->GetYaw();       // GetYaw()는 현재 방향 (직접 만들 수도 있음)
-	float pitchDelta = pitch - m_pPlayer->GetPitch(); // 선택사항
-
-	// 새 위치 계산
-	m_pPlayer->Rotate(-pitchDelta, yawDelta, 0.0f); // -pitchDelta
+	XMFLOAT3 movement = Vector3::ScalarProduct(dirNormalized, moveDist);
 	m_pPlayer->Move(movement, false);
 }
+
 void Level1Scene::Render(ID3D12GraphicsCommandList* pd3dCommandList)
 {
 
