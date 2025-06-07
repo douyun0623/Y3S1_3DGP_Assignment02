@@ -81,7 +81,6 @@ void Level1Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 	m_pPlayer = pAirplanePlayer;
 	m_pPlayer->AddRef();
 	m_pCamera = m_pPlayer->GetCamera();
-	//m_pCamera->SetPosition(XMFLOAT3(0.0f, 5.0f, -10.f));
 }
 
 void Level1Scene::ReleaseObjects()
@@ -140,7 +139,9 @@ void Level1Scene::AnimateObjects(float fTimeElapsed)
 	}
 
 	//플레이어를 실제로 이동하고 카메라를 갱신한다. 중력과 마찰력의 영향을 속도 벡터에 적용한다.
+	m_pPlayer->Move(DIR_FORWARD, 300.0f * fTimeElapsed, true);
 	m_pPlayer->Update(fTimeElapsed);
+
 }
 
 void Level1Scene::ReleaseUploadBuffers()
