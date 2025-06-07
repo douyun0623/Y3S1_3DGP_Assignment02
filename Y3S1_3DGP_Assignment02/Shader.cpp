@@ -606,7 +606,20 @@ CGameObject* CObjectsShader::PickObjectByRayIntersection(XMFLOAT3& xmf3PickPosit
 void CObjectsShader1::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	std::vector<XMFLOAT3> positions = {
-		XMFLOAT3(0.f, 1.f, 1.f)
+		XMFLOAT3(0.f, 0.f, 0.f),
+		XMFLOAT3(0.f, 0.f, 100.f),
+		XMFLOAT3(0.f, 0.f, 200.f),
+		XMFLOAT3(0.f, 0.f, 300.f),
+		XMFLOAT3(0.f, 0.f, 400.f),
+		XMFLOAT3(0.f, 0.f, 500.f),
+		XMFLOAT3(0.f, 0.f, 600.f),
+		XMFLOAT3(0.f, 0.f, 700.f),
+		XMFLOAT3(0.f, 0.f, 800.f),
+		XMFLOAT3(0.f, 0.f, 900.f),
+		XMFLOAT3(0.f, 0.f, 1000.f),
+		XMFLOAT3(0.f, 0.f, 1100.f),
+		XMFLOAT3(0.f, 0.f, 1200.f),
+		XMFLOAT3(0.f, 0.f, 1300.f),
 	};
 	const int numPositions = positions.size();
 

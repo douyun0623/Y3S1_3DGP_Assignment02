@@ -139,9 +139,8 @@ void Level1Scene::AnimateObjects(float fTimeElapsed)
 	}
 
 	//플레이어를 실제로 이동하고 카메라를 갱신한다. 중력과 마찰력의 영향을 속도 벡터에 적용한다.
-	m_pPlayer->Move(DIR_FORWARD, 300.0f * fTimeElapsed, true);
+	m_pPlayer->Move(DIR_FORWARD, 300.0f * fTimeElapsed, false);
 	m_pPlayer->Update(fTimeElapsed);
-
 }
 
 void Level1Scene::ReleaseUploadBuffers()
