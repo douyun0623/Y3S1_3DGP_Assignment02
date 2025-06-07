@@ -72,8 +72,7 @@ public:
 	virtual D3D12_SHADER_BYTECODE CreateVertexShader(ID3DBlob** ppd3dShaderBlob);
 	virtual D3D12_SHADER_BYTECODE CreatePixelShader(ID3DBlob** ppd3dShaderBlob);
 
-	virtual void CreateShader(ID3D12Device* pd3dDevice, ID3D12RootSignature
-		* pd3dGraphicsRootSignature);
+	virtual void CreateShader(ID3D12Device* pd3dDevice, ID3D12RootSignature * pd3dGraphicsRootSignature);
 };
 
 // CObjectsShader 클래스는 게임 객체들을 포함하는 셰이더 객체이다. 
@@ -106,4 +105,12 @@ public:
 protected:
 	CGameObject** m_ppObjects = NULL;
 	int m_nObjects = 0;
+};
+
+//------------------------------------------------------------------------------------------------
+
+class CObjectsShader1 : public CObjectsShader
+{
+public:
+	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList) override;
 };

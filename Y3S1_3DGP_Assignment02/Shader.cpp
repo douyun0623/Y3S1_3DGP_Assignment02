@@ -535,6 +535,8 @@ void CObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
 
+
+
 void CObjectsShader::ReleaseObjects()
 {
 	if (m_ppObjects)
@@ -593,4 +595,34 @@ CGameObject* CObjectsShader::PickObjectByRayIntersection(XMFLOAT3& xmf3PickPosit
 		}
 	}
 	return(pSelectedObject);
+}
+
+//------------------------------------------------------------------------------------------------
+//----------------------------------------CObjectsShader1------------------------------------------
+//------------------------------------------------------------------------------------------------
+
+
+
+void CObjectsShader1::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
+{
+	std::vector<XMFLOAT3> positions = {
+		XMFLOAT3(0.f, 1.f, 1.f)
+	};
+	const int numPositions = positions.size();
+
+	// 정육면체 메쉬 생성 (12x12x12)
+	CCubeMeshDiffused* pCubeMesh = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList);
+
+	m_nObjects = numPositions;
+	m_ppObjects = new CGameObject * [m_nObjects];
+
+	for (int i = 0; i < m_nObjects; ++i)
+	{
+		CRotatingObject* pRotatingObject = new CRotatingObject();
+		pRotatingObject->SetMesh((CMesh*)pCubeMesh);
+		pRotatingObject->SetPosition(positions[i]);
+		m_ppObjects[i] = pRotatingObject;
+	}
+
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
