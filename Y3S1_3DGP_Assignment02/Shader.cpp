@@ -673,3 +673,34 @@ void CFloorShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandL
 void CFloorShader::AnimateObjects(float fTimeElapsed)
 {
 }
+
+
+//------------------------------------------------------------------------------------------------
+//----------------------------------------CEnemyShader--------------------------------------------
+//------------------------------------------------------------------------------------------------
+
+void CEnemyShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
+{
+	std::vector<XMFLOAT3> positions = {
+		XMFLOAT3(0.f, 0.f, 0.f)
+	};
+	const int numPositions = positions.size();
+
+	// 정육면체 메쉬 생성 (12x12x12)
+	// CCubeMeshDiffused* pCubeMesh = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList, 1000.f, 10.f, 1000.f);
+	// 정육면체 메쉬 생성 (12x12x12)
+	CTankMesh* pCubeMesh = new CTankMesh(pd3dDevice, pd3dCommandList, 5, 5, 10);
+
+	m_nObjects = numPositions;
+	m_ppObjects = new CGameObject * [m_nObjects];
+
+	for (int i = 0; i < m_nObjects; ++i)
+	{
+		CRotatingObject* pRotatingObject = new CRotatingObject();
+		pRotatingObject->SetMesh((CMesh*)pCubeMesh);
+		pRotatingObject->SetPosition(positions[i]);
+		m_ppObjects[i] = pRotatingObject;
+	}
+
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+}

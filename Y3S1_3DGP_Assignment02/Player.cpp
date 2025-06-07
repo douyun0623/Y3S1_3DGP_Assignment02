@@ -141,12 +141,11 @@ void CPlayer::Rotate(float x, float y, float z)
 	else if (nCameraMode == SPACESHIP_CAMERA)
 	{
 		/*스페이스-쉽 카메라에서 플레이어의 회전은 회전 각도의 제한이 없다. 그리고 모든 축을 중심으로 회전을 할 수 있다.*/
-		m_pCamera->Rotate(0, y, 0);
+		m_pCamera->Rotate(x, y, 0);
 		
 		if (y != 0.0f)
 		{
-			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Up),
-				XMConvertToRadians(y));
+			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Up),XMConvertToRadians(y));
 			m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
 			m_xmf3Right = Vector3::TransformNormal(m_xmf3Right, xmmtxRotate);
 		}

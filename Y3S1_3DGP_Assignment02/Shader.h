@@ -122,3 +122,9 @@ public:
 
 	virtual void AnimateObjects(float fTimeElapsed) override;
 };
+
+class CEnemyShader : public CObjectsShader
+{
+public:
+	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList) override;
+};

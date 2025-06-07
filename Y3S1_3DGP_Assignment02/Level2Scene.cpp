@@ -75,10 +75,10 @@ void Level2Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 	FloorShader[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	FloorShader[0].BuildObjects(pd3dDevice, pd3dCommandList);
 
-	/*m_nShaders = 1;
-	m_pShaders = new CObjectsShader1[m_nShaders];
+	m_nShaders = 1;
+	m_pShaders = new CEnemyShader[m_nShaders];
 	m_pShaders[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
-	m_pShaders[0].BuildObjects(pd3dDevice, pd3dCommandList);*/
+	m_pShaders[0].BuildObjects(pd3dDevice, pd3dCommandList);
 
 	// 플레이어 설정
 	CPlayer* pAirplanePlayer = new CLevel2Player(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
