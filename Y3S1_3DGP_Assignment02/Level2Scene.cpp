@@ -1,22 +1,17 @@
 #include "stdafx.h"
-#include "Level1Scene.h"
+#include "Level2Scene.h"
 #include "SceneManager.h"
 
-float Clamp(float value, float minVal, float maxVal)
-{
-	return (value < minVal) ? minVal : (value > maxVal) ? maxVal : value;
-}
-
-Level1Scene::Level1Scene()
+Level2Scene::Level2Scene()
 {
 }
 
-Level1Scene::~Level1Scene()
+Level2Scene::~Level2Scene()
 {
 	ReleaseObjects();
 }
 
-ID3D12RootSignature* Level1Scene::CreateGraphicsRootSignature(ID3D12Device* pd3dDevice)
+ID3D12RootSignature* Level2Scene::CreateGraphicsRootSignature(ID3D12Device* pd3dDevice)
 {
 	ID3D12RootSignature* pd3dGraphicsRootSignature = NULL;
 
@@ -69,43 +64,26 @@ ID3D12RootSignature* Level1Scene::CreateGraphicsRootSignature(ID3D12Device* pd3d
 	return(pd3dGraphicsRootSignature);
 }
 
-void Level1Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, HWND hWnd)
+void Level2Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, HWND hWnd)
 {
 	m_hWnd = hWnd;
 
 	//그래픽 루트 시그너쳐를 생성한다. 
 	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
 
-	targets = {
-		XMFLOAT3(0.f, 0.f, 0.f),
-		XMFLOAT3(30.f, 100.f, 100.f),
-		XMFLOAT3(0.f, 0.f, 200.f),
-		XMFLOAT3(0.f, 0.f, 300.f),
-		XMFLOAT3(0.f, 0.f, 400.f),
-		XMFLOAT3(0.f, 0.f, 500.f),
-		XMFLOAT3(0.f, 0.f, 600.f),
-		XMFLOAT3(0.f, 0.f, 700.f),
-		XMFLOAT3(0.f, 0.f, 800.f),
-		XMFLOAT3(0.f, 0.f, 900.f),
-		XMFLOAT3(0.f, 0.f, 1000.f),
-		XMFLOAT3(0.f, 0.f, 1100.f),
-		XMFLOAT3(0.f, 0.f, 1200.f),
-		XMFLOAT3(0.f, 0.f, 1300.f)
-	};
-
 	m_nShaders = 1;
-	m_pShaders = new CObjectsShader1[m_nShaders];
+	m_pShaders = new CObjectsShader[m_nShaders];
 	m_pShaders[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	m_pShaders[0].BuildObjects(pd3dDevice, pd3dCommandList);
 
 	// 플레이어 설정
-	CPlayer* pAirplanePlayer = new CLevel1Player(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	CPlayer* pAirplanePlayer = new CAirplanePlayer(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	m_pPlayer = pAirplanePlayer;
 	m_pPlayer->AddRef();
 	m_pCamera = m_pPlayer->GetCamera();
 }
 
-void Level1Scene::ReleaseObjects()
+void Level2Scene::ReleaseObjects()
 {
 	if (m_pd3dGraphicsRootSignature) m_pd3dGraphicsRootSignature->Release();
 	for (int i = 0; i < m_nShaders; i++)
@@ -117,7 +95,7 @@ void Level1Scene::ReleaseObjects()
 	if (m_pPlayer) m_pPlayer->Release();
 }
 
-bool Level1Scene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
+bool Level2Scene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	switch (nMessageID)
 	{
@@ -146,12 +124,12 @@ bool Level1Scene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 	return false;
 }
 
-bool Level1Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
+bool Level2Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	return(false);
 }
 
-void Level1Scene::AnimateObjects(float fTimeElapsed)
+void Level2Scene::AnimateObjects(float fTimeElapsed)
 {
 	ProcessInput(fTimeElapsed);
 
@@ -159,69 +137,21 @@ void Level1Scene::AnimateObjects(float fTimeElapsed)
 	{
 		m_pShaders[i].AnimateObjects(fTimeElapsed);
 	}
-
-	//플레이어를 실제로 이동하고 카메라를 갱신한다. 중력과 마찰력의 영향을 속도 벡터에 적용한다.
-	// m_pPlayer->Move(DIR_FORWARD, 300.0f * fTimeElapsed, false);
-	moveToRail(fTimeElapsed);
+	
 	m_pPlayer->Update(fTimeElapsed);
 }
 
-void Level1Scene::ReleaseUploadBuffers()
+void Level2Scene::ReleaseUploadBuffers()
 {
 	for (int i = 0; i < m_nShaders; i++) m_pShaders[i].ReleaseUploadBuffers();
 }
 
-ID3D12RootSignature* Level1Scene::GetGraphicsRootSignature()
+ID3D12RootSignature* Level2Scene::GetGraphicsRootSignature()
 {
 	return(m_pd3dGraphicsRootSignature);
 }
 
-void Level1Scene::moveToRail(float fTimeElapsed)
-{
-	if (targets.empty()) return;
-
-	XMFLOAT3 target = targets[currentTargetIndex];
-	XMFLOAT3 pos = m_pPlayer->GetPosition();
-	XMFLOAT3 dir = Vector3::Subtract(target, pos);
-	float distance = Vector3::Length(dir);
-
-	if (distance < 1.0f) {
-		currentTargetIndex++;
-		if (currentTargetIndex >= targets.size()) {
-			currentTargetIndex = 0;
-			SceneManager::GetInstance().ChangeScene(SceneType::LEVEL2);
-		}
-
-		return;
-	}
-
-	// 방향 정규화
-	XMFLOAT3 dirNormalized = Vector3::Normalize(dir);
-
-	// 목표 Yaw 계산
-	float targetYaw = XMConvertToDegrees(atan2f(dirNormalized.x, dirNormalized.z));
-	float currentYaw = m_pPlayer->GetYaw();
-
-	// Yaw 보간 (회전 속도 제한)
-	float maxTurnSpeed = 90.0f * fTimeElapsed; // 초당 90도 회전 가능
-	float deltaYaw = targetYaw - currentYaw;
-
-	// [-180, 180] 범위로 조정
-	while (deltaYaw > 180.0f) deltaYaw -= 360.0f;
-	while (deltaYaw < -180.0f) deltaYaw += 360.0f;
-
-	// 실제로 회전할 값 계산 (보간)
-	float yawToApply = Clamp(deltaYaw, -maxTurnSpeed, maxTurnSpeed);
-	float newYaw = currentYaw + yawToApply;
-	m_pPlayer->Rotate(0, yawToApply, 0); // 또는 Rotate로 구현되어 있다면 Rotate(0, yawToApply, 0);
-
-	// 이동
-	float moveDist = 100.f * fTimeElapsed;
-	XMFLOAT3 movement = Vector3::ScalarProduct(dirNormalized, moveDist);
-	m_pPlayer->Move(movement, false);
-}
-
-void Level1Scene::Render(ID3D12GraphicsCommandList* pd3dCommandList)
+void Level2Scene::Render(ID3D12GraphicsCommandList* pd3dCommandList)
 {
 
 	m_pCamera->SetViewportsAndScissorRects(pd3dCommandList);
@@ -240,7 +170,7 @@ void Level1Scene::Render(ID3D12GraphicsCommandList* pd3dCommandList)
 	// 3인칭 카메라일 때 플레이어가 항상 보이도록 렌더링한다. 
 #ifdef _WITH_PLAYER_TOP
 	//렌더 타겟은 그대로 두고 깊이 버퍼를 1.0으로 지우고 플레이어를 렌더링하면 플레이어는 무조건 그려질 것이다. 
-	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, 
+	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle,
 		D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
 #endif
 	//3인칭 카메라일 때 플레이어를 렌더링한다. 
