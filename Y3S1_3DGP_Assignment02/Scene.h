@@ -1,63 +1,46 @@
 #pragma once
-#include "Timer.h"
-//#include "GameObject.h"
+
+#include "stdafx.h"
+#include "Camera.h"
 #include "Shader.h"
 #include "Player.h"
 
-class CCamera;
-
-class CScene
+class Scene
 {
 public:
-	CScene();
-	~CScene() {}
+    Scene();
+    virtual ~Scene();
 
-	//씬에서 마우스와 키보드 메시지를 처리한다. 
-	bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM
-		lParam);
-	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM
-		lParam);
+    virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, HWND hWnd) = 0;
+    virtual void ReleaseObjects() = 0;
 
-	
-	void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, HWND m_hWnd);
-	void ReleaseObjects();
+    virtual void AnimateObjects(float fTimeElapsed) = 0;
+    virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList) = 0;
 
-	bool ProcessInput(float fTimeElapsed);
+    virtual bool ProcessInput(float fTimeElapsed);
+    virtual bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+    virtual bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
-	void AnimateObjects(float fTimeElapsed);
+    virtual void ReleaseUploadBuffers() = 0;
 
-	void Render(ID3D12GraphicsCommandList* pd3dCommandList);
-
-	void ReleaseUploadBuffers();
-
-	//그래픽 루트 시그너쳐를 생성한다. 
-	ID3D12RootSignature* CreateGraphicsRootSignature(ID3D12Device *pd3dDevice);
-	ID3D12RootSignature* GetGraphicsRootSignature();
-
-	// 
-	void ProcessSelectedObject(DWORD dwDirection, float cxDelta, float cyDelta);
-
-public:
-	CPlayer* m_pPlayer = NULL;
-	CCamera* m_pCamera = NULL;
-
-	//씬의 모든 게임 객체들에 대한 마우스 픽킹을 수행한다. 
-	CGameObject* PickObjectPointedByCursor(int xClient, int yClient, CCamera *pCamera);
-
-	//마지막으로 마우스 버튼을 클릭할 때의 마우스 커서의 위치이다. 
-	POINT m_ptOldCursorPos;
-
-	HWND m_hWnd = NULL;
-
-	CGameObject* m_pSelectedObject = NULL;
+    virtual ID3D12RootSignature* GetGraphicsRootSignature();
+    virtual CGameObject* PickObjectPointedByCursor(int xClient, int yClient, CCamera* pCamera);
 
 protected:
-	//배치(Batch) 처리를 하기 위하여 씬을 셰이더들의 리스트로 표현한다. 
-	CObjectsShader *m_pShaders = NULL;
-	int m_nShaders = 0;
+    virtual ID3D12RootSignature* CreateGraphicsRootSignature(ID3D12Device* pd3dDevice) = 0;
+    virtual void ProcessSelectedObject(DWORD dwDirection, float cxDelta, float cyDelta);
 
-	//루트 시그너쳐를 나타내는 인터페이스 포인터이다. 
-	ID3D12RootSignature* m_pd3dGraphicsRootSignature = NULL;
-	
+protected:
+    HWND m_hWnd;
+    ID3D12RootSignature* m_pd3dGraphicsRootSignature = nullptr;
+
+    CShader* m_pShaders = nullptr;
+    int m_nShaders = 0;
+
+    CPlayer* m_pPlayer = nullptr;
+    CCamera* m_pCamera = nullptr;
+
+    CGameObject* m_pSelectedObject = nullptr;
+    POINT m_ptOldCursorPos{};
 };
 

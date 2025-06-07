@@ -1,4 +1,5 @@
-#include "Scene.h"
+#include "stdafx.h"
+#include "Scene111.h"
 #include "Camera.h"
 
 CScene::CScene()

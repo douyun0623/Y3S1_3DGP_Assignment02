@@ -1,8 +1,15 @@
 #pragma once
 #include "Timer.h"
-#include "Scene.h"
+#include "Scene111.h"
 #include "Player.h"
+#include <map>
 
+enum class SceneType { 
+	START, 
+	MENU,
+	LEVEL1, 
+	LEVEL2 
+};
 
 //------------------------------------------------------------------------------------
 //-----------------------------------CGameFramework-----------------------------------
@@ -70,6 +77,8 @@ private:
 	_TCHAR m_pszFrameRate[50];
 
 	CScene* m_pScene;
+	/*std::map<SceneType, void*> m_Scenes;*/
+	SceneType currentScene = SceneType::START;
 
 public:
 	CCamera* m_pCamera = NULL;
