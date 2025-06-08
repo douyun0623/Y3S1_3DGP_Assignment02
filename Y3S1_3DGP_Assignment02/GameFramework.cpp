@@ -387,6 +387,9 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case '3':
 			SceneManager::GetInstance().ChangeScene(SceneType::LEVEL2);
 			break;
+		case '4':
+			SceneManager::GetInstance().ChangeScene(SceneType::MENU);
+			break;
 		case VK_F1:
 		case VK_F2:
 		case VK_F3:

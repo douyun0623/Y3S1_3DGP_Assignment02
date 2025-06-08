@@ -727,7 +727,7 @@ void CObjectsShader1::AnimateObjects(float fTimeElapsed)
 void CFloorShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	std::vector<XMFLOAT3> positions = {
-		XMFLOAT3(0.f, -20.f, 0.f)
+		XMFLOAT3(0.f, -5.f, 0.f)
 	};
 	const int numPositions = positions.size();
 
