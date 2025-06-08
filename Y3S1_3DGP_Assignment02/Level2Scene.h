@@ -29,4 +29,7 @@ public:
 
 	CShader* FloorShader = nullptr;
 	int m_nFShaders = 1;
+
+	CShader* BulletShader = nullptr;
+	int m_nBShaders = 1;
 };

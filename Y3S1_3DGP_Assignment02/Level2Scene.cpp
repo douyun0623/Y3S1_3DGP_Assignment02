@@ -75,8 +75,13 @@ void Level2Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 	FloorShader[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	FloorShader[0].BuildObjects(pd3dDevice, pd3dCommandList);
 
+	//  총알
+	BulletShader = new CBulletShader[m_nFShaders];
+	BulletShader[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	BulletShader[0].BuildObjects(pd3dDevice, pd3dCommandList);
+
 	m_nShaders = 1;
-	m_pShaders = new CEnemyShader[m_nShaders];
+	m_pShaders = new CEnemyShader[m_nBShaders];
 	m_pShaders[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	m_pShaders[0].BuildObjects(pd3dDevice, pd3dCommandList);
 
@@ -97,6 +102,9 @@ void Level2Scene::ReleaseObjects()
 	}
 	FloorShader[0].ReleaseShaderVariables();
 	FloorShader[0].ReleaseObjects();
+	BulletShader[0].ReleaseShaderVariables();
+	BulletShader[0].ReleaseObjects();
+
 	if (m_pShaders) delete[] m_pShaders;
 	if (m_pPlayer) m_pPlayer->Release();
 }
@@ -211,7 +219,7 @@ void Level2Scene::AnimateObjects(float fTimeElapsed)
 	{
 		m_pShaders[i].AnimateObjects(fTimeElapsed);
 	}
-	
+	BulletShader[0].AnimateObjects(fTimeElapsed);
 	m_pPlayer->Update(fTimeElapsed);
 }
 
@@ -219,6 +227,7 @@ void Level2Scene::ReleaseUploadBuffers()
 {
 	for (int i = 0; i < m_nShaders; i++) m_pShaders[i].ReleaseUploadBuffers();
 	if (FloorShader) FloorShader[0].ReleaseUploadBuffers();
+	if (BulletShader) BulletShader[0].ReleaseUploadBuffers();
 }
 
 ID3D12RootSignature* Level2Scene::GetGraphicsRootSignature()
@@ -242,6 +251,7 @@ void Level2Scene::Render(ID3D12GraphicsCommandList* pd3dCommandList)
 		m_pShaders[i].Render(pd3dCommandList, m_pCamera);
 	}
 	FloorShader[0].Render(pd3dCommandList, m_pCamera);
+	BulletShader[0].Render(pd3dCommandList, m_pCamera);
 
 	// 3인칭 카메라일 때 플레이어가 항상 보이도록 렌더링한다. 
 #ifdef _WITH_PLAYER_TOP

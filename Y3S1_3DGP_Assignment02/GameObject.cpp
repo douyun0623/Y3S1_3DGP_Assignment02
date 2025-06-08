@@ -230,6 +230,11 @@ void CRotatingObject::Animate(float fTimeElapsed)
 	CGameObject::Rotate(&m_xmf3RotationAxis, m_fRotationSpeed * fTimeElapsed);
 }
 
+//------------------------------------------------------------------------------------------------
+//----------------------------------------CTankObject-----------------------------------------
+//------------------------------------------------------------------------------------------------
+
+
 void CTankObject::Animate(float fTimeElapsed)
 {
     m_fDirectionChangeTime += fTimeElapsed;
@@ -256,3 +261,23 @@ void CTankObject::Animate(float fTimeElapsed)
     SetPosition(Vector3::Add(GetPosition(), moveDir));
 }
 
+//------------------------------------------------------------------------------------------------
+//----------------------------------------CRotatingObject-----------------------------------------
+//------------------------------------------------------------------------------------------------
+
+
+CBulletObject::CBulletObject()
+{
+}
+
+CBulletObject::~CBulletObject()
+{
+}
+
+void CBulletObject::Animate(float fTimeElapsed)
+{
+	//// ¿Ãµø
+	//XMFLOAT3 dir = GetLook();
+	//XMFLOAT3 moveDir = Vector3::ScalarProduct(dir, 1 * fTimeElapsed);
+	//SetPosition(Vector3::Add(GetPosition(), moveDir));
+}
