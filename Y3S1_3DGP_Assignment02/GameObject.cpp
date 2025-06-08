@@ -256,3 +256,61 @@ void CTankObject::Animate(float fTimeElapsed)
     SetPosition(Vector3::Add(GetPosition(), moveDir));
 }
 
+//------------------------------------------------------------------------------------------------
+//----------------------------------------CBulletObject-------------------------------------------
+//------------------------------------------------------------------------------------------------
+
+
+
+CBulletObject::CBulletObject()
+{
+}
+
+void CBulletObject::SetFirePosition(XMFLOAT3 xmf3FirePosition)
+{
+	m_xmf3FirePosition = xmf3FirePosition;
+	SetPosition(xmf3FirePosition);
+}
+
+void CBulletObject::Reset()
+{
+	m_pLockedObject = NULL;
+	m_fElapsedTimeAfterFire = 0;
+	m_fMovingDistance = 0;
+	m_fRotationAngle = 0.0f;
+
+	m_bActive = false;
+}
+
+void CBulletObject::Animate(float fTimeElapsed)
+{
+	m_fElapsedTimeAfterFire += fTimeElapsed;
+
+	float fDistance = m_fMovingSpeed * fTimeElapsed;
+
+	if ((m_fElapsedTimeAfterFire > m_fLockingDelayTime) && m_pLockedObject)
+	{
+		XMFLOAT3 xmf3Position = GetPosition();
+		XMVECTOR xmvPosition = XMLoadFloat3(&xmf3Position);
+
+		XMFLOAT3 xmf3LockedObjectPosition = m_pLockedObject->GetPosition();
+		XMVECTOR xmvLockedObjectPosition = XMLoadFloat3(&xmf3LockedObjectPosition);
+		XMVECTOR xmvToLockedObject = xmvLockedObjectPosition - xmvPosition;
+		xmvToLockedObject = XMVector3Normalize(xmvToLockedObject);
+
+		XMVECTOR xmvMovingDirection = XMLoadFloat3(&m_xmf3MovingDirection);
+		xmvMovingDirection = XMVector3Normalize(XMVectorLerp(xmvMovingDirection, xmvToLockedObject, 0.25f));
+		XMStoreFloat3(&m_xmf3MovingDirection, xmvMovingDirection);
+	}
+	XMFLOAT4X4 mtxRotate = Matrix4x4::RotationYawPitchRoll(0.0f, m_fRotationSpeed * fTimeElapsed, 0.0f);
+	m_xmf4x4World = Matrix4x4::Multiply(mtxRotate, m_xmf4x4World);
+	XMFLOAT3 xmf3Movement = Vector3::ScalarProduct(m_xmf3MovingDirection, fDistance, false);
+	XMFLOAT3 xmf3Position = GetPosition();
+	xmf3Position = Vector3::Add(xmf3Position, xmf3Movement);
+	SetPosition(xmf3Position);
+	m_fMovingDistance += fDistance;
+
+	// UpdateBoundingBox();
+
+	if ((m_fMovingDistance > m_fBulletEffectiveRange) || (m_fElapsedTimeAfterFire > m_fLockingTime)) Reset();;
+}

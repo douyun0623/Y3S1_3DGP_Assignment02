@@ -689,6 +689,8 @@ void CEnemyShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandL
 		XMFLOAT3(0.f, 0.f, 0.f),
 		XMFLOAT3(0.f, 0.f, 0.f),
 		XMFLOAT3(0.f, 0.f, 0.f),
+		XMFLOAT3(0.f, 0.f, 0.f),
+		XMFLOAT3(0.f, 0.f, 0.f),
 	};
 	const int numPositions = positions.size();
 
@@ -709,4 +711,67 @@ void CEnemyShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandL
 	}
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+}
+
+
+//------------------------------------------------------------------------------------------------
+//----------------------------------------CBulletShader-------------------------------------------
+//------------------------------------------------------------------------------------------------
+
+void CBulletShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
+{
+	std::vector<XMFLOAT3> positions = {
+		XMFLOAT3(0.f, 0.f, 0.f)
+	};
+	const int numPositions = positions.size();
+
+	;
+	// 정육면체 메쉬 생성 (12x12x12)
+	CCubeMeshDiffused* pCubeMesh = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList, 3,3,5);
+
+	m_nObjects = numPositions;
+	m_ppObjects = new CBulletObject * [m_nObjects];
+
+	for (int i = 0; i < m_nObjects; ++i)
+	{
+		CBulletObject* pRotatingObject = new CBulletObject();
+		pRotatingObject->SetMesh((CMesh*)pCubeMesh);
+		pRotatingObject->SetPosition(positions[i]);
+		m_ppObjects[i] = pRotatingObject;
+	}
+
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+}
+
+void CBulletShader::Firebullet(CGameObject* pLockedObject, XMFLOAT4X4 playerf4x4World)
+{
+	CBulletObject* pBulletObject = NULL;
+	for (int i = 0; i < BULLETS; i++)
+	{
+		if (!m_ppObjects[i]->m_bActive)
+		{
+			pBulletObject = m_ppObjects[i];
+			break;
+		}
+	}
+
+	if (pBulletObject)
+	{
+		XMFLOAT3 xmf3Position = Vector3::Add(pBulletObject->GetPosition(), XMFLOAT3(0, 5, 0));
+		XMFLOAT3 xmf3Direction = pBulletObject->GetLook();
+		XMFLOAT3 xmf3FirePosition = Vector3::Add(xmf3Position, Vector3::ScalarProduct(xmf3Direction, 6.0f, false));
+
+		// 플레이어 월드 행렬 가져오기
+		pBulletObject->m_xmf4x4World = playerf4x4World;
+
+		pBulletObject->SetFirePosition(xmf3FirePosition);
+		pBulletObject->SetMovingDirection(xmf3Direction);
+		pBulletObject->m_bActive = true;
+
+		//if (pLockedObject)
+		//{
+		//	pBulletObject->m_pLockedObject = pLockedObject;
+		//	pBulletObject->SetColor(RGB(0, 0, 255));
+		//}
+	}
 }

@@ -86,7 +86,7 @@ public:
 	void Rotate(float x, float y, float z);
 	
 	//플레이어의 위치와 회전 정보를 경과 시간에 따라 갱신하는 함수이다. 
-	void Update(float fTimeElapsed);
+	virtual void Update(float fTimeElapsed);
 	
 	//플레이어의 위치가 바뀔 때마다 호출되는 함수와 그 함수에서 사용하는 정보를 설정하는 함수이다.
 	virtual void OnPlayerUpdateCallback(float fTimeElapsed) { }
@@ -135,12 +135,27 @@ public:
 	virtual void OnPrepareRender();
 };
 
+//#define BULLETS					50
+
 class CLevel2Player : public CPlayer
 {
 public:
+	// CBulletShader* m_pBulletShdaer = NULL;
+
 	CLevel2Player(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList,
 		ID3D12RootSignature* pd3dGraphicsRootSignature);
 	virtual ~CLevel2Player();
 	virtual CCamera* ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
 	virtual void OnPrepareRender();
+	void Firebullet(CGameObject* pLockedObject);
+
+	/*CBulletObject* m_ppBullets[BULLETS];
+	virtual void Update(float fTimeElapsed) override {
+		CPlayer::Update(fTimeElapsed);
+		for (int i = 0; i < BULLETS; i++) {
+			if (m_ppBullets[i]) m_ppBullets[i]->Animate(fTimeElapsed);
+		}
+		return;
+	}*/
+	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera = NULL);
 };

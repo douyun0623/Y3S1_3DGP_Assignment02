@@ -128,3 +128,16 @@ class CEnemyShader : public CObjectsShader
 public:
 	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList) override;
 };
+
+#define BULLETS 50
+
+class CBulletShader : public CObjectsShader
+{
+public:
+	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList) override;
+
+	void Firebullet(CGameObject* pLockedObject, XMFLOAT4X4 playerf4x4World);
+
+	CBulletObject** m_ppObjects = NULL;
+	int m_nObjects = 0;
+};

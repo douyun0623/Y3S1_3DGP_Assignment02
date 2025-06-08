@@ -627,3 +627,17 @@ void CLevel2Player::OnPrepareRender()
 {
 	CPlayer::OnPrepareRender();
 }
+
+
+void CLevel2Player::Firebullet(CGameObject* pLockedObject)
+{
+	
+
+}
+
+void CLevel2Player::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+{
+	
+	CPlayer::Render(pd3dCommandList, pCamera);
+	// 플레이어가 발사한 총알을 렌더링한다.
+}

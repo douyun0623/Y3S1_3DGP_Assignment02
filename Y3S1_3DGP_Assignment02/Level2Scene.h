@@ -29,4 +29,9 @@ public:
 
 	CShader* FloorShader = nullptr;
 	int m_nFShaders = 1;
+
+	CBulletShader* m_pBulletShdaer = nullptr;
+	int m_nBulletShaders = 1;
+
+	CLevel2Player* m_pPlayer = nullptr;
 };

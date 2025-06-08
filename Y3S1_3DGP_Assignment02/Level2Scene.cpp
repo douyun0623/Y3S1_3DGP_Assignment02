@@ -75,13 +75,19 @@ void Level2Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 	FloorShader[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	FloorShader[0].BuildObjects(pd3dDevice, pd3dCommandList);
 
+	//총알을 생성한다.
+	//총알 쉐이더 추가
+	m_pBulletShdaer = new CBulletShader();
+	m_pBulletShdaer->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	m_pBulletShdaer->BuildObjects(pd3dDevice, pd3dCommandList);
+
 	m_nShaders = 1;
 	m_pShaders = new CEnemyShader[m_nShaders];
 	m_pShaders[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	m_pShaders[0].BuildObjects(pd3dDevice, pd3dCommandList);
 
 	// 플레이어 설정
-	CPlayer* pAirplanePlayer = new CLevel2Player(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	CLevel2Player* pAirplanePlayer = new CLevel2Player(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	m_pPlayer = pAirplanePlayer;
 	m_pPlayer->AddRef();
 	m_pCamera = m_pPlayer->GetCamera();
@@ -200,7 +206,45 @@ bool Level2Scene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 
 bool Level2Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
-	return(false);
+	switch (nMessageID)
+	{
+	case 'C':
+		// m_pPlayer->Firebullet(m_pSelectedObject);
+		if (m_pBulletShdaer)
+		{
+			XMFLOAT3 xmf3Right = m_pPlayer->GetRight();      // x축 방향
+			XMFLOAT3 xmf3Up = m_pPlayer->GetUp();            // y축 방향
+			XMFLOAT3 xmf3Look = m_pPlayer->GetLook();        // z축 방향
+			XMFLOAT3 xmf3Position = m_pPlayer->GetPosition(); // 위치 벡터
+			XMFLOAT4X4 xmf4x4World;
+
+			xmf4x4World._11 = xmf3Right.x;
+			xmf4x4World._12 = xmf3Right.y;
+			xmf4x4World._13 = xmf3Right.z;
+			xmf4x4World._14 = 0.0f;
+
+			xmf4x4World._21 = xmf3Up.x;
+			xmf4x4World._22 = xmf3Up.y;
+			xmf4x4World._23 = xmf3Up.z;
+			xmf4x4World._24 = 0.0f;
+
+			xmf4x4World._31 = xmf3Look.x;
+			xmf4x4World._32 = xmf3Look.y;
+			xmf4x4World._33 = xmf3Look.z;
+			xmf4x4World._34 = 0.0f;
+
+			xmf4x4World._41 = xmf3Position.x;
+			xmf4x4World._42 = xmf3Position.y + 10.f;
+			xmf4x4World._43 = xmf3Position.z;
+			xmf4x4World._44 = 1.0f;
+			m_pBulletShdaer->Firebullet(m_pSelectedObject, xmf4x4World);
+		}
+		break;
+	default:
+		break;
+	}
+
+	return false;
 }
 
 void Level2Scene::AnimateObjects(float fTimeElapsed)
