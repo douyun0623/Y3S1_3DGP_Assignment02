@@ -276,18 +276,6 @@ CBulletObject::~CBulletObject()
 
 void CBulletObject::Animate(float fTimeElapsed)
 {
-	//// 1. 플레이어 위치 추출
-	//XMFLOAT3 playerPos = XMFLOAT3(playerWorld._41, playerWorld._42, playerWorld._43);
-
-	//// 2. 플레이어 Look 벡터 (Z축 방향)
-	//XMFLOAT3 lookDir = XMFLOAT3(playerWorld._31, playerWorld._32, playerWorld._33);
-	//lookDir = Vector3::Normalize(lookDir);
-
-	// 3. 총알 위치가 아직 초기화되지 않았다면 → 플레이어 위치로 설정
-	//if (moveable) {
-	//	reset(playerWorld);
-	//}
-
 	if(moveable){
 		// 4. 총알 이동 (look 방향으로)
 		XMFLOAT3 moveDir = Vector3::ScalarProduct(lookDir, bulletSpeed * fTimeElapsed);
