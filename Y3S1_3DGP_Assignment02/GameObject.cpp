@@ -64,7 +64,7 @@ void CGameObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pC
 		//객체의 정보를 셰이더 변수(상수 버퍼)로 복사한다. 
 		UpdateShaderVariables(pd3dCommandList);
 		// if (m_pShader) m_pShader->Render(pd3dCommandList, pCamera); 배치 처리에 의해 셰이더 렌더를 처리하고 오브젝트를 렌더함
-		if (m_pMesh and m_bActive) m_pMesh->Render(pd3dCommandList);
+		if (m_pMesh && m_bActive) { m_pMesh->Render(pd3dCommandList); }
 	}
 }
 

@@ -13,7 +13,6 @@ Level1Scene::Level1Scene()
 
 Level1Scene::~Level1Scene()
 {
-	ReleaseObjects();
 }
 
 ID3D12RootSignature* Level1Scene::CreateGraphicsRootSignature(ID3D12Device* pd3dDevice)

@@ -8,7 +8,6 @@ StartScene::StartScene()
 
 StartScene::~StartScene()
 {
-	ReleaseObjects();
 }
 
 ID3D12RootSignature* StartScene::CreateGraphicsRootSignature(ID3D12Device* pd3dDevice)
@@ -89,10 +88,10 @@ void StartScene::ReleaseObjects()
 	if (m_pd3dGraphicsRootSignature) m_pd3dGraphicsRootSignature->Release();
 	for (int i = 0; i < m_nShaders; i++)
 	{
-		m_pShaders[i].ReleaseShaderVariables();
-		m_pShaders[i].ReleaseObjects();
+		 m_pShaders[i].ReleaseShaderVariables();
+		 m_pShaders[i].ReleaseObjects();
 	}
-	if (m_pShaders) delete[] m_pShaders;
+	 if (m_pShaders) delete[] m_pShaders;
 	if (m_pPlayer) m_pPlayer->Release();
 }
 

@@ -8,7 +8,6 @@ MenuScene::MenuScene()
 
 MenuScene::~MenuScene()
 {
-	ReleaseObjects();
 }
 
 ID3D12RootSignature* MenuScene::CreateGraphicsRootSignature(ID3D12Device* pd3dDevice)
