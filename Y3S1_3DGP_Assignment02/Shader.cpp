@@ -607,31 +607,103 @@ CGameObject* CObjectsShader::PickObjectByRayIntersection(XMFLOAT3& xmf3PickPosit
 void CObjectsShader1::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	std::vector<XMFLOAT3> positions = {
-		XMFLOAT3(0.f, 0.f, 0.f),
-		XMFLOAT3(30.f, 50.f, 100.f),
-		XMFLOAT3(0.f, 0.f, 200.f),
-		XMFLOAT3(0.f, 0.f, 300.f),
-		XMFLOAT3(0.f, 0.f, 400.f),
-		XMFLOAT3(0.f, 0.f, 500.f),
-		XMFLOAT3(0.f, 0.f, 600.f),
-		XMFLOAT3(0.f, 0.f, 700.f),
-		XMFLOAT3(0.f, 0.f, 800.f),
-		XMFLOAT3(0.f, 0.f, 900.f),
-		XMFLOAT3(0.f, 0.f, 1000.f),
-		XMFLOAT3(0.f, 0.f, 1100.f),
-		XMFLOAT3(0.f, 0.f, 1200.f),
-		XMFLOAT3(0.f, 0.f, 1300.f)
+		XMFLOAT3(-1, -2, 0),
+		XMFLOAT3(-1, -1, 2),
+		XMFLOAT3(-1, 0, 4),
+		XMFLOAT3(-1, 1, 6),
+		XMFLOAT3(-1, 2, 8),
+		XMFLOAT3(-1, 3, 10),
+		XMFLOAT3(-1, 4, 12),
+		XMFLOAT3(-1, 5, 14),
+		XMFLOAT3(-1, 7, 16),
+		XMFLOAT3(-1, 9, 18),
+		XMFLOAT3(-1, 11, 20),
+		XMFLOAT3(-1, 13, 22),
+		XMFLOAT3(-1, 15, 24),
+		XMFLOAT3(-1, 17, 26),
+		XMFLOAT3(-1, 19, 28),
+		XMFLOAT3(-1, 21, 30),
+		XMFLOAT3(-1, 21, 32),
+		XMFLOAT3(-1, 21, 34),
+		XMFLOAT3(-1, 21, 36),
+		XMFLOAT3(-1, 21, 38),
+		XMFLOAT3(-1, 21, 40),
+		XMFLOAT3(-3, 21, 40),
+		XMFLOAT3(-5, 21, 40),
+		XMFLOAT3(-7, 21, 40),
+		XMFLOAT3(-9, 21, 40),
+		XMFLOAT3(-11, 21, 40),
+		XMFLOAT3(-13, 21, 40),
+		XMFLOAT3(-15, 21, 40),
+		XMFLOAT3(-17, 21, 40),
+		XMFLOAT3(-19, 21, 40),
+		XMFLOAT3(-21, 21, 40),
+		XMFLOAT3(-23, 21, 40),
+		XMFLOAT3(-25, 21, 40),
+		XMFLOAT3(-27, 21, 40),
+		XMFLOAT3(-29, 21, 40),
+		XMFLOAT3(-31, 21, 40),
+		XMFLOAT3(-33, 21, 40),
+		XMFLOAT3(-33, 21, 42),
+		XMFLOAT3(-33, 21, 44),
+		XMFLOAT3(-33, 21, 46),
+		XMFLOAT3(-33, 21, 48),
+		XMFLOAT3(-33, 19, 50),
+		XMFLOAT3(-33, 17, 52),
+		XMFLOAT3(-33, 15, 54),
+		XMFLOAT3(-33, 13, 56),
+		XMFLOAT3(-33, 11, 58),
+		XMFLOAT3(-33, 9, 60),
+		XMFLOAT3(-33, 7, 62),
+		XMFLOAT3(-33, 5, 64),
+		XMFLOAT3(-33, 3, 66),
+		XMFLOAT3(-33, 3, 68),
+		XMFLOAT3(-33, 3, 70),
+		XMFLOAT3(-33, 3, 72),
+		XMFLOAT3(-33, 3, 74),
+		XMFLOAT3(-31, 3, 74),
+		XMFLOAT3(-29, 3, 74),
+		XMFLOAT3(-25, 3, 74),
+		XMFLOAT3(-23, 3, 74),
+		XMFLOAT3(-21, 3, 74),
+		XMFLOAT3(-19, 3, 74),
+		XMFLOAT3(-17, 3, 74),
+		XMFLOAT3(-15, 3, 74),
+		XMFLOAT3(-13, 3, 74),
+		XMFLOAT3(-11, 3, 74),
+		XMFLOAT3(-9, 5, 74),
+		XMFLOAT3(-7, 7, 76),
+		XMFLOAT3(-5, 9, 78),
+		XMFLOAT3(-3, 11, 80),
+		XMFLOAT3(-1, 13, 82),
+		XMFLOAT3(1, 15, 84),
+		XMFLOAT3(3, 17, 86),
+		XMFLOAT3(3, 19, 88),
+		XMFLOAT3(3, 21, 90),
+		XMFLOAT3(3, 23, 92),
+		XMFLOAT3(3, 25, 94),
+		XMFLOAT3(3, 27, 96),
+		XMFLOAT3(3, 29, 98),
+		XMFLOAT3(3, 31, 100),
+		XMFLOAT3(3, 33, 102),
+		XMFLOAT3(3, 35, 104),
+		XMFLOAT3(3, 37, 106),
+		XMFLOAT3(3, 39, 108),
+		XMFLOAT3(3, 41, 110),
+		XMFLOAT3(-27, 3, 74),
 	};
 	const int numPositions = positions.size();
 
-	// 정육면체 메쉬 생성 (12x12x12)
-	CCubeMeshDiffused* pCubeMesh = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList);
+	
 
 	m_nObjects = numPositions;
 	m_ppObjects = new CGameObject * [m_nObjects];
 
 	for (int i = 0; i < m_nObjects; ++i)
 	{
+		// 정육면체 메쉬 생성 (12x12x12)
+		CCubeMeshDiffused* pCubeMesh = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList);
+
 		CRotatingObject* pRotatingObject = new CRotatingObject();
 		pRotatingObject->SetMesh((CMesh*)pCubeMesh);
 		pRotatingObject->SetPosition(positions[i]);
@@ -639,6 +711,11 @@ void CObjectsShader1::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsComma
 	}
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+}
+
+void CObjectsShader1::AnimateObjects(float fTimeElapsed)
+{
+
 }
 
 
@@ -751,4 +828,166 @@ void CBulletShader::AnimateObjects(float fTimeElapsed)
 		dynamic_cast<CBulletObject*>(m_ppObjects[j])->Animate(fTimeElapsed);
 		dynamic_cast<CBulletObject*>(m_ppObjects[j])->UpdateBoundingBox();
 	}
+}
+
+void CMenuShader1::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
+{
+	std::vector<XMFLOAT3> positions = {
+		XMFLOAT3(-46, 17, -1),
+		XMFLOAT3(-47, 15, -1),
+		XMFLOAT3(-48, 13, -1),
+		XMFLOAT3(-44, 15, -1),
+		XMFLOAT3(-44, 13, -1),
+		XMFLOAT3(-40, 15, -1),
+		XMFLOAT3(-40, 13, -1),
+		XMFLOAT3(-40, 17, -1),
+		XMFLOAT3(-34, 17, -1),
+		XMFLOAT3(-35, 15, -1),
+		XMFLOAT3(-36, 13, -1),
+		XMFLOAT3(-32, 15, -1),
+		XMFLOAT3(-32, 13, -1),
+		XMFLOAT3(-28, 15, -1),
+		XMFLOAT3(-28, 13, -1),
+		XMFLOAT3(-28, 17, -1),
+		XMFLOAT3(-34, 19, -1),
+		XMFLOAT3(-36, 19, -1),
+		XMFLOAT3(-32, 19, -1),
+		XMFLOAT3(-32, 10, -1),
+		XMFLOAT3(-34, 10, -1),
+		XMFLOAT3(-30, 10, -1),
+		XMFLOAT3(-28, 8, -1),
+		XMFLOAT3(-28, 6, -1),
+		XMFLOAT3(-28, 10, -1),
+		XMFLOAT3(-26, 15, -1),
+		XMFLOAT3(-16, 15, -1),
+		XMFLOAT3(-18, 15, -1),
+		XMFLOAT3(-16, 17, -1),
+		XMFLOAT3(-18, 19, -1),
+		XMFLOAT3(-20, 19, -1),
+		XMFLOAT3(-16, 19, -1),
+		XMFLOAT3(-18, 11, -1),
+		XMFLOAT3(-20, 11, -1),
+		XMFLOAT3(-16, 11, -1),
+		XMFLOAT3(-20, 15, -1),
+		XMFLOAT3(-20, 13, -1),
+		XMFLOAT3(-12, 15, -1),
+		XMFLOAT3(-12, 13, -1),
+		XMFLOAT3(-12, 17, -1),
+		XMFLOAT3(-14, 15, -1),
+		XMFLOAT3(-9, 15, -1),
+		XMFLOAT3(-9, 13, -1),
+		XMFLOAT3(-9, 17, -1),
+		XMFLOAT3(-1, 15, -1),
+		XMFLOAT3(-3, 15, -1),
+		XMFLOAT3(-1, 17, -1),
+		XMFLOAT3(-1, 13, -1),
+		XMFLOAT3(-5, 19, -1),
+		XMFLOAT3(-1, 19, -1),
+		XMFLOAT3(-3, 11, -1),
+		XMFLOAT3(-5, 11, -1),
+		XMFLOAT3(-1, 11, -1),
+		XMFLOAT3(-5, 15, -1),
+		XMFLOAT3(-5, 13, -1),
+		XMFLOAT3(-5, 17, -1),
+		XMFLOAT3(3, 15, -1),
+		XMFLOAT3(3, 13, -1),
+		XMFLOAT3(3, 17, -1),
+		XMFLOAT3(1, 15, -1),
+		XMFLOAT3(6, 15, -1),
+		XMFLOAT3(6, 13, -1),
+		XMFLOAT3(6, 17, -1),
+		XMFLOAT3(2, 4, -1),
+		XMFLOAT3(0, 4, -1),
+		XMFLOAT3(2, 6, -1),
+		XMFLOAT3(0, 8, -1),
+		XMFLOAT3(-2, 8, -1),
+		XMFLOAT3(2, 8, -1),
+		XMFLOAT3(0, 0, -1),
+		XMFLOAT3(-2, 0, -1),
+		XMFLOAT3(2, 0, -1),
+		XMFLOAT3(-2, 4, -1),
+		XMFLOAT3(-2, 2, -1),
+		XMFLOAT3(11, 15, -1),
+		XMFLOAT3(11, 13, -1),
+		XMFLOAT3(11, 17, -1),
+		XMFLOAT3(11, 9, -1),
+		XMFLOAT3(11, 7, -1),
+		XMFLOAT3(11, 11, -1),
+		XMFLOAT3(20, 15, -1),
+		XMFLOAT3(18, 15, -1),
+		XMFLOAT3(20, 17, -1),
+		XMFLOAT3(18, 19, -1),
+		XMFLOAT3(16, 19, -1),
+		XMFLOAT3(20, 19, -1),
+		XMFLOAT3(18, 11, -1),
+		XMFLOAT3(16, 11, -1),
+		XMFLOAT3(20, 11, -1),
+		XMFLOAT3(16, 15, -1),
+		XMFLOAT3(16, 13, -1),
+		XMFLOAT3(24, 15, -1),
+		XMFLOAT3(24, 13, -1),
+		XMFLOAT3(24, 17, -1),
+		XMFLOAT3(22, 15, -1),
+		XMFLOAT3(27, 15, -1),
+		XMFLOAT3(27, 13, -1),
+		XMFLOAT3(27, 17, -1),
+		XMFLOAT3(35, 15, -1),
+		XMFLOAT3(33, 15, -1),
+		XMFLOAT3(35, 17, -1),
+		XMFLOAT3(35, 13, -1),
+		XMFLOAT3(31, 19, -1),
+		XMFLOAT3(35, 19, -1),
+		XMFLOAT3(33, 11, -1),
+		XMFLOAT3(31, 11, -1),
+		XMFLOAT3(35, 11, -1),
+		XMFLOAT3(31, 15, -1),
+		XMFLOAT3(31, 13, -1),
+		XMFLOAT3(31, 17, -1),
+		XMFLOAT3(39, 15, -1),
+		XMFLOAT3(39, 13, -1),
+		XMFLOAT3(39, 17, -1),
+		XMFLOAT3(37, 15, -1),
+		XMFLOAT3(42, 15, -1),
+		XMFLOAT3(42, 13, -1),
+		XMFLOAT3(42, 17, -1),
+		XMFLOAT3(38, 4, -1),
+		XMFLOAT3(36, 4, -1),
+		XMFLOAT3(38, 6, -1),
+		XMFLOAT3(36, 8, -1),
+		XMFLOAT3(34, 8, -1),
+		XMFLOAT3(38, 8, -1),
+		XMFLOAT3(36, 0, -1),
+		XMFLOAT3(34, 0, -1),
+		XMFLOAT3(38, 0, -1),
+		XMFLOAT3(34, 4, -1),
+		XMFLOAT3(34, 2, -1),
+		XMFLOAT3(51, 14, -1),
+		XMFLOAT3(49, 14, -1),
+		XMFLOAT3(51, 16, -1),
+		XMFLOAT3(49, 18, -1),
+		XMFLOAT3(47, 18, -1),
+		XMFLOAT3(51, 18, -1),
+		XMFLOAT3(49, 10, -1),
+		XMFLOAT3(47, 10, -1),
+		XMFLOAT3(51, 10, -1),
+		XMFLOAT3(47, 14, -1),
+		XMFLOAT3(47, 12, -1),
+	};
+	const int numPositions = positions.size();
+
+	// 정육면체 메쉬 생성 (12x12x12)
+	CCubeMeshDiffused* pCubeMesh = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList);
+
+	m_nObjects = numPositions;
+	m_ppObjects = new CGameObject * [m_nObjects];
+
+	for (int i = 0; i < m_nObjects; ++i)
+	{
+		CRotatingObject* pRotatingObject = new CRotatingObject();
+		pRotatingObject->SetMesh((CMesh*)pCubeMesh);
+		pRotatingObject->SetPosition(positions[i]);
+		m_ppObjects[i] = pRotatingObject;
+	}
+
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }

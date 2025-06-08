@@ -2,6 +2,7 @@
 #include "StartScene.h"
 #include "Level1Scene.h"
 #include "Level2Scene.h"
+#include "MenuScene.h"
 
 SceneManager& SceneManager::GetInstance()
 {
@@ -15,12 +16,13 @@ void SceneManager::InitScenes(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_Scenes[SceneType::START] = std::make_shared<StartScene>();
 	m_Scenes[SceneType::LEVEL1] = std::make_shared<Level1Scene>();
 	m_Scenes[SceneType::LEVEL2] = std::make_shared<Level2Scene>();
+	m_Scenes[SceneType::MENU] = std::make_shared<MenuScene>();
 
 	for (auto& scenePair : m_Scenes) {
 		scenePair.second->BuildObjects(pd3dDevice, pd3dCommandList, m_hWnd);
 	}
 
-	ChangeScene(SceneType::LEVEL2); // 초기 씬을 START로 설정
+	ChangeScene(SceneType::LEVEL1); // 초기 씬을 START로 설정
 }
 
 void SceneManager::ChangeScene(SceneType newType)

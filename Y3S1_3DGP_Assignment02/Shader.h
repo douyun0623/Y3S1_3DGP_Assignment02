@@ -114,6 +114,14 @@ class CObjectsShader1 : public CObjectsShader
 {
 public:
 	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList) override;
+
+	virtual void AnimateObjects(float fTimeElapsed) override;
+};
+
+class CMenuShader1 : public CObjectsShader
+{
+public:
+	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList) override;
 };
 
 class CFloorShader : public CObjectsShader
