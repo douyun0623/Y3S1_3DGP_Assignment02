@@ -75,11 +75,6 @@ void Level2Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 	FloorShader[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	FloorShader[0].BuildObjects(pd3dDevice, pd3dCommandList);
 
-	//  ÃÑ¾Ë
-	BulletShader = new CBulletShader[m_nFShaders];
-	BulletShader[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
-	BulletShader[0].BuildObjects(pd3dDevice, pd3dCommandList);
-
 	m_nShaders = 1;
 	m_pShaders = new CEnemyShader[m_nBShaders];
 	m_pShaders[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
@@ -90,6 +85,12 @@ void Level2Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 	m_pPlayer = pAirplanePlayer;
 	m_pPlayer->AddRef();
 	m_pCamera = m_pPlayer->GetCamera();
+
+	//  ÃÑ¾Ë
+	BulletShader = new CBulletShader[m_nFShaders];
+	BulletShader[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	BulletShader[0].BuildObjects(pd3dDevice, pd3dCommandList);
+	dynamic_cast<CBulletShader*>(&BulletShader[0])->setPlayer(m_pPlayer);
 }
 
 void Level2Scene::ReleaseObjects()
@@ -208,7 +209,15 @@ bool Level2Scene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 
 bool Level2Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
-	return(false);
+	switch (wParam)
+	{
+	case 'c':
+	case 'C':
+		dynamic_cast<CBulletObject*>(dynamic_cast<CBulletShader*>(&BulletShader[0])->m_ppObjects[0])
+			->reset(m_pPlayer->GetPosition(), m_pPlayer->GetLookVector());
+		break;
+	}
+	return false;
 }
 
 void Level2Scene::AnimateObjects(float fTimeElapsed)

@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "Camera.h"
+#include "Player.h"
 
 //게임 객체의 정보를 셰이더에게 넘겨주기 위한 구조체(상수 버퍼)이다. 
 struct CB_GAMEOBJECT_INFO
@@ -102,7 +103,7 @@ public:
 	virtual CGameObject *PickObjectByRayIntersection(XMFLOAT3& xmf3PickPosition, 
 		XMFLOAT4X4& xmf4x4View, float* pfNearHitDistance)override;
 
-protected:
+public:
 	CGameObject** m_ppObjects = NULL;
 	int m_nObjects = 0;
 };
@@ -135,5 +136,9 @@ class CBulletShader : public CObjectsShader
 public:
 	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList) override;
 
+	void setPlayer(CPlayer* pPlayer) { m_pPlayer = pPlayer; }
+
 	virtual void AnimateObjects(float fTimeElapsed) override;
+
+	CPlayer* m_pPlayer = nullptr; // 플레이어 객체에 대한 포인터
 };

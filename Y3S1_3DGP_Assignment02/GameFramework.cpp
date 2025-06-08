@@ -429,6 +429,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 		break;
 	case WM_KEYDOWN:
 	case WM_KEYUP:
+	case WM_CHAR:
 		OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 		// if (m_pScene)m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 		if (currentScene)

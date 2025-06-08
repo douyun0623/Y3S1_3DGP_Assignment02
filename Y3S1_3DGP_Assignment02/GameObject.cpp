@@ -262,7 +262,7 @@ void CTankObject::Animate(float fTimeElapsed)
 }
 
 //------------------------------------------------------------------------------------------------
-//----------------------------------------CRotatingObject-----------------------------------------
+//----------------------------------------CBulletObject-----------------------------------------
 //------------------------------------------------------------------------------------------------
 
 
@@ -276,8 +276,37 @@ CBulletObject::~CBulletObject()
 
 void CBulletObject::Animate(float fTimeElapsed)
 {
-	//// 이동
-	//XMFLOAT3 dir = GetLook();
-	//XMFLOAT3 moveDir = Vector3::ScalarProduct(dir, 1 * fTimeElapsed);
-	//SetPosition(Vector3::Add(GetPosition(), moveDir));
+	//// 1. 플레이어 위치 추출
+	//XMFLOAT3 playerPos = XMFLOAT3(playerWorld._41, playerWorld._42, playerWorld._43);
+
+	//// 2. 플레이어 Look 벡터 (Z축 방향)
+	//XMFLOAT3 lookDir = XMFLOAT3(playerWorld._31, playerWorld._32, playerWorld._33);
+	//lookDir = Vector3::Normalize(lookDir);
+
+	// 3. 총알 위치가 아직 초기화되지 않았다면 → 플레이어 위치로 설정
+	//if (moveable) {
+	//	reset(playerWorld);
+	//}
+
+	if(moveable){
+		// 4. 총알 이동 (look 방향으로)
+		XMFLOAT3 moveDir = Vector3::ScalarProduct(lookDir, bulletSpeed * fTimeElapsed);
+		SetPosition(Vector3::Add(GetPosition(), moveDir));
+	}
+}
+
+void CBulletObject::reset(XMFLOAT3 position, XMFLOAT3 dir)
+{
+	// 플레이어 위치 (행렬의 4번째 행)
+	XMFLOAT3 playerPos = position;
+
+		// 플레이어의 정면 방향 (행렬의 3번째 행)
+	XMFLOAT3 lookDir = dir;
+	lookDir = Vector3::Normalize(lookDir);
+
+	// 총알 위치와 방향 초기화
+	SetPosition(playerPos);
+	lookDir = Vector3::Normalize(lookDir);
+
+	moveable = true; // 총알이 움직일 수 있는 상태로 설정
 }

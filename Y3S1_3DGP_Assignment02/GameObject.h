@@ -125,13 +125,13 @@ public:
 	CBulletObject();
 	virtual ~CBulletObject();
 private:
-	XMFLOAT3 m_xmf3RotationAxis;
-	float m_fRotationSpeed;
+	float bulletSpeed = 100.0f; // 총알 속도
+
 public:
-	void SetRotationSpeed(float fRotationSpeed) { m_fRotationSpeed = fRotationSpeed; }
-	void SetRotationAxis(XMFLOAT3 xmf3RotationAxis) {
-		m_xmf3RotationAxis =
-			xmf3RotationAxis;
-	}
 	virtual void Animate(float fTimeElapsed);
+public:
+	void reset(XMFLOAT3 position, XMFLOAT3 dir);
+private:
+	XMFLOAT3 lookDir = { 0.0f, 0.0f, 1.0f }; // 플레이어의 Look 벡터 (Z축 방향)
+	bool moveable = false; // 총알이 움직일 수 있는 상태인지 여부
 };
