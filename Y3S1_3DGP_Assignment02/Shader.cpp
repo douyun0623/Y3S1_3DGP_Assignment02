@@ -554,6 +554,7 @@ void CObjectsShader::AnimateObjects(float fTimeElapsed)
 	for (int j = 0; j < m_nObjects; j++)
 	{
 		m_ppObjects[j]->Animate(fTimeElapsed);
+		m_ppObjects[j]->UpdateBoundingBox();
 	}
 }
 
@@ -570,7 +571,7 @@ void CObjectsShader::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera*
 	CShader::Render(pd3dCommandList, pCamera);
 	for (int j = 0; j < m_nObjects; j++)
 	{
-		if (m_ppObjects[j])
+		if (m_ppObjects[j] and m_ppObjects[j]->m_bActive)
 		{
 			m_ppObjects[j]->Render(pd3dCommandList, pCamera);
 		}
@@ -689,11 +690,12 @@ void CEnemyShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandL
 		XMFLOAT3(0.f, 0.f, 0.f),
 		XMFLOAT3(0.f, 0.f, 0.f),
 		XMFLOAT3(0.f, 0.f, 0.f),
+		XMFLOAT3(0.f, 0.f, 0.f),
+		XMFLOAT3(0.f, 0.f, 0.f),
+		XMFLOAT3(0.f, 0.f, 0.f),
 	};
 	const int numPositions = positions.size();
 
-	// 정육면체 메쉬 생성 (12x12x12)
-	// CCubeMeshDiffused* pCubeMesh = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList, 1000.f, 10.f, 1000.f);
 	// 정육면체 메쉬 생성 (12x12x12)
 	CTankMesh* pCubeMesh = new CTankMesh(pd3dDevice, pd3dCommandList, 5, 5, 10);
 
@@ -706,6 +708,7 @@ void CEnemyShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandL
 		pRotatingObject->SetMesh((CMesh*)pCubeMesh);
 		pRotatingObject->SetPosition(positions[i]);
 		m_ppObjects[i] = pRotatingObject;
+		m_ppObjects[i]->m_xmBoundingBox = BoundingOrientedBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(2.5f, 1.7f, 4.f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 	}
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
@@ -718,14 +721,12 @@ void CEnemyShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandL
 void CBulletShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	std::vector<XMFLOAT3> positions = {
-		XMFLOAT3(0.f, 0.f, 0.f),
+		XMFLOAT3(0.f, -50.f, 0.f),
 	};
 	const int numPositions = positions.size();
 
 	// 정육면체 메쉬 생성 (12x12x12)
 	//CCubeMeshDiffused* pCubeMesh = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList, 1000.f, 10.f, 1000.f);
-	// 정육면체 메쉬 생성 (12x12x12)
-	// CTankMesh* pCubeMesh = new CTankMesh(pd3dDevice, pd3dCommandList, 5, 5, 10);
 	CCubeMeshDiffused* pCubeMesh = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList);
 
 	// numPositions;
@@ -748,5 +749,6 @@ void CBulletShader::AnimateObjects(float fTimeElapsed)
 	for (int j = 0; j < m_nObjects; j++)
 	{
 		dynamic_cast<CBulletObject*>(m_ppObjects[j])->Animate(fTimeElapsed);
+		dynamic_cast<CBulletObject*>(m_ppObjects[j])->UpdateBoundingBox();
 	}
 }

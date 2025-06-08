@@ -61,9 +61,17 @@ public:
 	//게임 객체를 회전(x-축, y-축, z-축)한다. 
 	void Rotate(float fPitch = 10.0f, float fYaw = 10.0f, float fRoll = 10.0f);
 
+	void UpdateBoundingBox()
+	{
+		m_xmBoundingBox = m_pMesh->GetBoundingBox();
+		m_xmBoundingBox.Transform(m_xmBoundingBox, XMLoadFloat4x4(&m_xmf4x4World));
+	}
+
 public:
 	//게임 객체가 카메라에 보인는 가를 검사한다.
 	bool IsVisible(CCamera *pCamera=NULL);
+
+	bool m_bActive = true;
 
 public:
 	//모델 좌표계의 픽킹 광선을 생성한다. 
@@ -73,6 +81,8 @@ public:
 	//카메라 좌표계의 한 점에 대한 모델 좌표계의 픽킹 광선을 생성하고 객체와의 교차를 검사한다. 
 	int PickObjectByRayIntersection(XMFLOAT3& xmf3PickPosition, XMFLOAT4X4& xmf4x4View, float* pfHitDistance);
 
+	//메쉬의 바운딩 박스(모델 좌표계)를 생성한다.
+	BoundingOrientedBox m_xmBoundingBox;
 };
 
 
@@ -134,4 +144,6 @@ public:
 private:
 	XMFLOAT3 lookDir = { 0.0f, 0.0f, 1.0f }; // 플레이어의 Look 벡터 (Z축 방향)
 	bool moveable = false; // 총알이 움직일 수 있는 상태인지 여부
+
+	CGameObject* m_pLockedObject = NULL;	// lock 오브젝트
 };

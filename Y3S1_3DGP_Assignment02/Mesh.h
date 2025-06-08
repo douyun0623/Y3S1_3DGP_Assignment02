@@ -79,7 +79,7 @@ protected:
 	//인덱스 버퍼의 인덱스에 더해질 인덱스이다.
 	int m_nBaseVertex = 0;
 
-protected:
+public:
 	//모델 좌표계의 OOBB 바운딩 박스이다.
 	BoundingOrientedBox m_xmBoundingBox;
 
@@ -138,7 +138,7 @@ class CTankMesh : public CMesh
 {
 public:
 	CTankMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList * pd3dCommandList, 
-		float fWidth = 2.0f, float fHeight = 2.0f, float fDepth = 2.0f);
+		float fWidth = 5.f, float fHeight = 3.5, float fDepth = 8.f);
 	virtual ~CTankMesh();
 public:
 	void CreateTankMesh(const XMFLOAT3& origin, const XMFLOAT3& size, std::vector<CDiffusedVertex>& outVertices, std::vector<UINT>& outIndices);

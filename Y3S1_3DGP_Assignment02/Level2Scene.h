@@ -27,6 +27,8 @@ public:
 	ID3D12RootSignature* CreateGraphicsRootSignature(ID3D12Device* pd3dDevice) override;
 	ID3D12RootSignature* GetGraphicsRootSignature()override;
 
+	void CheckObjectsByBulletCollision();
+
 	CShader* FloorShader = nullptr;
 	int m_nFShaders = 1;
 

@@ -75,6 +75,7 @@ void Level2Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 	FloorShader[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	FloorShader[0].BuildObjects(pd3dDevice, pd3dCommandList);
 
+	// 적
 	m_nShaders = 1;
 	m_pShaders = new CEnemyShader[m_nBShaders];
 	m_pShaders[0].CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
@@ -232,6 +233,8 @@ void Level2Scene::AnimateObjects(float fTimeElapsed)
 	}
 	BulletShader[0].AnimateObjects(fTimeElapsed);
 	m_pPlayer->Update(fTimeElapsed);
+
+
 }
 
 void Level2Scene::ReleaseUploadBuffers()
@@ -244,6 +247,35 @@ void Level2Scene::ReleaseUploadBuffers()
 ID3D12RootSignature* Level2Scene::GetGraphicsRootSignature()
 {
 	return(m_pd3dGraphicsRootSignature);
+}
+
+void Level2Scene::CheckObjectsByBulletCollision()
+{
+	// CBulletObject** ppBullets = ((CAirplanePlayer*)player.get())->m_ppBullets;
+
+	CBulletShader* pBulletShader = dynamic_cast<CBulletShader*>(&BulletShader[0]);
+	CGameObject** ppBullets = pBulletShader->m_ppObjects;
+	CEnemyShader* pEnemyShader = dynamic_cast<CEnemyShader*>(&m_pShaders[0]);
+	CGameObject** ppEnemys = pEnemyShader->m_ppObjects;
+
+	// 적 오브젝트 검사 (ppEnemys 기준)
+	for (int i = 0; i < 10; i++) // MAX_ENEMIES는 실제 최대 적 개수로 바꿔주세요
+	{
+		CGameObject* pEnemy = ppEnemys[i];
+		if (!pEnemy || !pEnemy->m_bActive) continue;
+
+		for (int j = 0; j < 50; j++) // MAX_BULLETS는 총알 최대 개수
+		{
+			CGameObject* pBullet = ppBullets[j];
+			if (!pBullet) continue;
+
+			if (pEnemy->m_xmBoundingBox.Intersects(pBullet->m_xmBoundingBox))
+			{
+				// 총알이 적과 충돌했을 때 처리
+				pEnemy->m_bActive = false; // 적 비활성화
+			}
+		}
+	}
 }
 
 void Level2Scene::Render(ID3D12GraphicsCommandList* pd3dCommandList)
