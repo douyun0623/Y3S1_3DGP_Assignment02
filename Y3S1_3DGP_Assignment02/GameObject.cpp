@@ -297,16 +297,12 @@ void CBulletObject::Animate(float fTimeElapsed)
 
 void CBulletObject::reset(XMFLOAT3 position, XMFLOAT3 dir)
 {
-	// 플레이어 위치 (행렬의 4번째 행)
-	XMFLOAT3 playerPos = position;
-
-		// 플레이어의 정면 방향 (행렬의 3번째 행)
-	XMFLOAT3 lookDir = dir;
-	lookDir = Vector3::Normalize(lookDir);
 
 	// 총알 위치와 방향 초기화
-	SetPosition(playerPos);
-	lookDir = Vector3::Normalize(lookDir);
+	SetPosition(position);
+
+	// 플레이어의 정면 방향 (행렬의 3번째 행)
+	lookDir = Vector3::Normalize(dir);
 
 	moveable = true; // 총알이 움직일 수 있는 상태로 설정
 }

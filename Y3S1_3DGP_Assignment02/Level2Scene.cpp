@@ -213,8 +213,10 @@ bool Level2Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 	{
 	case 'c':
 	case 'C':
-		dynamic_cast<CBulletObject*>(dynamic_cast<CBulletShader*>(&BulletShader[0])->m_ppObjects[0])
+		dynamic_cast<CBulletObject*>(dynamic_cast<CBulletShader*>(&BulletShader[0])->m_ppObjects[currentBulletIndex])
 			->reset(m_pPlayer->GetPosition(), m_pPlayer->GetLookVector());
+
+		currentBulletIndex = (currentBulletIndex + 1) % 50;
 		break;
 	}
 	return false;

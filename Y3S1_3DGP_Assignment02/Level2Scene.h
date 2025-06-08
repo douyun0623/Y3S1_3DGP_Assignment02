@@ -32,4 +32,6 @@ public:
 
 	CShader* BulletShader = nullptr;
 	int m_nBShaders = 1;
+
+	int currentBulletIndex = 0;
 };

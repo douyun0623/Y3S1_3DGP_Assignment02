@@ -728,14 +728,15 @@ void CBulletShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 	// CTankMesh* pCubeMesh = new CTankMesh(pd3dDevice, pd3dCommandList, 5, 5, 10);
 	CCubeMeshDiffused* pCubeMesh = new CCubeMeshDiffused(pd3dDevice, pd3dCommandList);
 
-	m_nObjects = numPositions;
+	// numPositions;
+	m_nObjects = 50;
 	m_ppObjects = new CGameObject * [m_nObjects];
 
 	for (int i = 0; i < m_nObjects; ++i)
 	{
 		CGameObject* pRotatingObject = new CBulletObject();
 		pRotatingObject->SetMesh((CMesh*)pCubeMesh);
-		pRotatingObject->SetPosition(positions[i]);
+		pRotatingObject->SetPosition(positions[0]);
 		m_ppObjects[i] = pRotatingObject;
 	}
 
